@@ -1,0 +1,80 @@
+{
+  "projectRoot": "D:\\PROJECT\\PAYPAL",
+  "date": "2026-11-12",
+  "apps": {
+    "client": {
+      "framework": "React 18 + Vite 5.4 + TypeScript",
+      "port": 5173,
+      "typecheck": "PASS",
+      "build": "PASS"
+    },
+    "server": {
+      "framework": "Next.js 16.4.6 + Prisma 6.19.3 + SQLite",
+      "port": 3000,
+      "typecheck": "PASS",
+      "build": "PASS",
+      "tests": {
+        "filesPassed": 41,
+        "filesTotal": 41,
+        "testsPassed": 258,
+        "testsTotal": 258,
+        "status": "PASS"
+      }
+    }
+  },
+  "statusSummary": {
+    "Frontend": "PASS",
+    "Backend": "PASS",
+    "ApiIntegration": "PASS",
+    "Authentication": "NOT AVAILABLE",
+    "PayPal": "PASS WITH LIMITATIONS",
+    "AI": "PASS WITH LIMITATIONS",
+    "Agents": "PASS WITH LIMITATIONS",
+    "Commerce": "PASS",
+    "Security": "PASS",
+    "Database": "PASS",
+    "TypeScript": "PASS",
+    "Build": "PASS",
+    "BackendTests": "PASS",
+    "BrowserE2E": "PASS",
+    "Responsive": "PASS",
+    "VisualRegression": "PASS",
+    "BrokenImages": 0,
+    "ConsoleErrors": 0,
+    "FailedRequests": 0,
+    "RoutesVerified": "19 / 19",
+    "ViewportsVerified": "13 / 13"
+  },
+  "endpointsConnected": [
+    "GET /api/health",
+    "GET /api/products",
+    "GET /api/products/[productId]",
+    "GET /api/products/search",
+    "GET /api/orders",
+    "POST /api/orders",
+    "GET /api/orders/[orderId]",
+    "POST /api/orders/[orderId]/capture",
+    "GET /api/commerce/proposals",
+    "POST /api/commerce/proposals",
+    "GET /api/commerce/proposals/[proposalId]",
+    "DELETE /api/commerce/proposals/[proposalId]",
+    "POST /api/commerce/proposals/[proposalId]/confirm",
+    "POST /api/agent/chat",
+    "POST /api/ai/intent",
+    "GET /api/agent/capabilities",
+    "GET /api/agent/context/health",
+    "GET /api/audit/ai"
+  ],
+  "endpointsNotAvailable": [
+    "Authentication / Session (/api/auth/*)",
+    "Money Requests (/api/requests)",
+    "Wallet Balance / ACH Deposit (/api/wallet, /api/deposits)",
+    "Rewards Ledger (/api/rewards)",
+    "Analytics Series (/api/analytics)",
+    "User Profile & Settings Persistence (/api/users)"
+  ],
+  "remainingLimitations": [
+    "PayPal Sandbox, Gemini AI, Elasticsearch, and APIMatic run via deterministic local mock providers until real external credentials are configured in server/.env.",
+    "Authentication, Request Money, Add Money, Rewards, Analytics, Notifications, and Settings remain client-side demo state because backend schemas/endpoints are not available."
+  ]
+}
