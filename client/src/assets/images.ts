@@ -1,0 +1,18 @@
+export const ASSETS = {
+  avatarCat: "/assets/avatar_cat.svg",
+  sidebarCat: "/assets/sidebar_cat.svg",
+  heroBg: "/assets/hero_bg.svg",
+  spendingCat: "/assets/spending_cat.svg",
+  rewardsArt: "/assets/rewards_art.svg",
+  aiCat: "/assets/ai_cat.svg",
+  prodLaptop: "/assets/prod_laptop.svg",
+  prodHeadphones: "/assets/prod_headphones.svg",
+  prodWatch: "/assets/prod_watch.svg",
+  fraudguardSkyline: "/assets/fraudguard_skyline.svg",
+  agentsCat: "/assets/agents_cat.svg",
+  agentsSkyline: "/assets/agents_skyline.svg",
+  txApple: "/assets/tx_apple.svg",
+  txPaypal: "/assets/tx_paypal.svg",
+  txSteam: "/assets/tx_steam.svg",
+  txNetflix: "/assets/tx_netflix.svg",
+};
