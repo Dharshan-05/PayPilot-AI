@@ -1,0 +1,167 @@
+// Prisma schema for PayPal AI Hackathon - Phase 1 Foundation
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 1. User / Customer Entity
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders    PaymentOrder[]
+  aiAudits  AIAuditLog[]
+
+  @@map("users")
+}
+
+// 2. Payment / Order Entity
+// Keeps internal identifiers separated from PayPal external identifiers
+model PaymentOrder {
+  id                String   @id @default(uuid())
+  internalReference String   @unique // e.g. ORD-20261110-XXXX
+  paypalOrderId     String?  @unique // PayPal-assigned Order ID (e.g. 5O190127TN364715T)
+  paypalCaptureId   String?  @unique // PayPal-assigned Capture ID after execution
+  amount            Float
+  currency          String   @default("USD")
+  status            String   // CREATED, APPROVED, CAPTURED, FAILED, CANCELLED
+  customerEmail     String?
+  description       String?
+  metadata          String?  // Safe JSON metadata
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  userId            String?
+  user              User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  proposal          CommerceProposal?
+
+  @@index([status])
+  @@index([paypalOrderId])
+  @@map("payment_orders")
+}
+
+// 3. AI Interaction / Audit Log Entity
+// Records AI requests, operations, providers, latency, and sanitized summaries
+model AIAuditLog {
+  id              String   @id @default(uuid())
+  requestId       String   @unique
+  operation       String   // e.g. "INTENT_ANALYSIS", "ACTION_PROPOSAL", "SAFETY_AUDIT"
+  provider        String   // e.g. "mock", "gemini", "openai"
+  model           String
+  status          String   // "SUCCESS", "REJECTED_BY_POLICY", "FAILED", "BLOCKED_INJECTION"
+  latencyMs       Int?
+  promptSummary   String?  // Redacted, safe prompt digest
+  responseSummary String?  // Redacted, safe response summary
+  metadata        String?  // Safe JSON metadata (no secrets or sensitive PII)
+  createdAt       DateTime @default(now())
+
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([operation])
+  @@index([status])
+  @@map("ai_audit_logs")
+}
+
+// 4. Webhook / Event Entity
+// Records incoming PayPal webhook events, signature verification status, and idempotency
+model WebhookEvent {
+  id                 String    @id @default(uuid())
+  eventId            String    @unique // PayPal event ID (e.g. WH-XXXXXXXX)
+  eventType          String    // e.g. PAYMENT.CAPTURE.COMPLETED, CHECKOUT.ORDER.APPROVED
+  resourceType       String?   // e.g. capture, checkout-order
+  processingStatus   String    // "RECEIVED", "VERIFIED", "PROCESSED", "DUPLICATE", "FAILED", "INVALID_SIGNATURE"
+  signatureVerified  Boolean   @default(false)
+  payload            String?   // Sanitized payload JSON
+  errorMessage       String?
+  receivedAt         DateTime  @default(now())
+  processedAt        DateTime?
+
+  @@index([eventType])
+  @@index([processingStatus])
+  @@map("webhook_events")
+}
+
+// 5. Product Catalog Entity (Phase 3 AI Commerce Foundation)
+model Product {
+  id          String   @id @default(uuid())
+  sku         String   @unique
+  name        String
+  description String
+  category    String
+  price       Float
+  currency    String   @default("USD")
+  inventory   Int      @default(100)
+  isAvailable Boolean  @default(true)
+  metadata    String?  // Safe JSON metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  proposals   CommerceProposal[]
+
+  @@index([category])
+  @@index([isAvailable])
+  @@map("products")
+}
+
+// 6. Commerce Proposal Entity (Intermediate boundary between AI recommendation and PayPal Order)
+model CommerceProposal {
+  id             String        @id @default(uuid())
+  proposalNumber String        @unique // e.g. PROP-20261110-XXXX
+  productId      String
+  product        Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity       Int           @default(1)
+  unitAmount     Float
+  totalAmount    Float
+  currency       String        @default("USD")
+  status         String        @default("PENDING_CONFIRMATION") // DRAFT, PENDING_CONFIRMATION, CONFIRMED, EXPIRED, CANCELLED, COMPLETED, FAILED
+  expiresAt      DateTime
+  confirmedAt    DateTime?
+  paymentOrderId String?       @unique
+  paymentOrder   PaymentOrder? @relation(fields: [paymentOrderId], references: [id], onDelete: SetNull)
+  metadata       String?       // Safe JSON
+  userId         String?
+  conversationId String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([status])
+  @@index([expiresAt])
+  @@map("commerce_proposals")
+}
+
+// 7. Conversational Commerce Memory Entities
+model CommerceConversation {
+  id        String   @id @default(uuid())
+  sessionId String   @unique
+  userId    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages  CommerceMessage[]
+
+  @@map("commerce_conversations")
+}
+
+model CommerceMessage {
+  id             String               @id @default(uuid())
+  conversationId String
+  conversation   CommerceConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String               // "user" | "assistant" | "system"
+  content        String
+  metadata       String?              // Safe JSON (no secrets)
+  createdAt      DateTime             @default(now())
+
+  @@index([conversationId])
+  @@map("commerce_messages")
+}
+
