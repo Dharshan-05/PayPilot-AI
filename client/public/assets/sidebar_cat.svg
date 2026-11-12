@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2360" height="1760" viewBox="0 0 236 176" fill="none">
+  <defs>
+    <linearGradient id="nightSky" x1="118" y1="0" x2="118" y2="158" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#353330"/><stop offset="0.55" stop-color="#484540"/><stop offset="1" stop-color="#6e685f"/>
+    </linearGradient>
+    <linearGradient id="groundFloor" x1="118" y1="156" x2="118" y2="176" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9e978d"/><stop offset="1" stop-color="#878076"/>
+    </linearGradient>
+    <radialGradient id="orbGlow1" cx="50%" cy="45%" r="55%">
+      <stop offset="0" stop-color="#e9e2d6" stop-opacity="0.72"/>
+      <stop offset="0.65" stop-color="#8a837a" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#3c3935" stop-opacity="0.85"/>
+    </radialGradient>
+    <clipPath id="sphinxBody">
+      <path d="M40 156 C38 122 61 97 96 97 C106 97 112 95 115 88 C118 82 124 89 129 96 C135 95 143 95 148 96 C153 89 158 85 161 88 C165 92 167 108 165 123 C174 132 180 146 179 158 L40 158 Z"/>
+    </clipPath>
+  </defs>
+  <rect width="236" height="158" fill="url(#nightSky)"/>
+  <g opacity="0.28">
+    <path d="M0 158 L0 100 L18 100 L18 112 L34 112 L34 90 L52 90 L52 108 L78 108 L78 120 L105 120 L105 158 Z" fill="#a8a095"/>
+    <path d="M168 158 L168 116 L190 116 L190 102 L214 102 L214 114 L236 114 L236 158 Z" fill="#b0a89d"/>
+  </g>
+  <rect x="191" y="128" width="45" height="30" fill="#2c2a27" opacity="0.88"/>
+  <rect x="200" y="135" width="7" height="7" fill="#6d675f" opacity="0.5"/>
+  <rect x="212" y="135" width="7" height="7" fill="#6d675f" opacity="0.5"/>
+  <rect x="224" y="135" width="7" height="7" fill="#6d675f" opacity="0.5"/>
+  <circle cx="171" cy="70" r="9.5" fill="url(#orbGlow1)" stroke="#1d1c1a" stroke-width="2.2"/>
+  <circle cx="192" cy="49" r="12" fill="url(#orbGlow1)" stroke="#1d1c1a" stroke-width="2.4"/>
+  <circle cx="188" cy="45" r="2.6" fill="#ffffff" opacity="0.45"/>
+  <circle cx="168" cy="67" r="2" fill="#ffffff" opacity="0.38"/>
+  <rect x="0" y="156" width="236" height="20" fill="url(#groundFloor)"/>
+  <line x1="0" y1="158" x2="236" y2="158" stroke="#1d1c1a" stroke-width="2.2"/>
+  <path d="M44 146 C31 144 21 146 21 152 C21 157 31 159 45 158 Z" fill="#1d1c1a"/>
+  <g clip-path="url(#sphinxBody)">
+    <rect x="36" y="82" width="146" height="80" fill="#f8f4ed"/>
+    <path d="M38 115 C45 96 68 95 95 96 C103 97 104 108 98 117 C88 128 69 124 58 134 C50 141 44 150 38 148 Z" fill="#1d1c1a"/>
+    <path d="M106 105 C109 86 124 86 135 96 C146 86 161 86 165 106 C167 115 158 122 145 117 C139 114 134 114 128 117 C115 122 104 115 106 105 Z" fill="#c7bfb4"/>
+    <path d="M98 80 L129 80 L138 103 L148 80 L176 80 L176 112 C164 98 148 97 138 114 C128 97 112 98 98 112 Z" fill="#1d1c1a"/>
+    <path d="M114 102 L117.5 90 L124.5 99 Z" fill="#ebe4d9"/>
+    <path d="M159 102 L155.5 90 L148.5 99 Z" fill="#ebe4d9"/>
+  </g>
+  <path d="M40 156 C38 122 61 97 96 97 C106 97 112 95 115 88 C118 82 124 89 129 96 C135 95 143 95 148 96 C153 89 158 85 161 88 C165 92 167 108 165 123 C174 132 180 146 179 158 L40 158 Z" stroke="#1a1917" stroke-width="3.6" stroke-linejoin="round"/>
+  <path d="M105 147 C114 146 125 149 128 158" stroke="#1a1917" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M155 158 C155 150 163 146 172 148" stroke="#1a1917" stroke-width="3.2" stroke-linecap="round"/>
+  <circle cx="126.5" cy="121" r="3.4" fill="#181715"/><circle cx="125.5" cy="120" r="1.1" fill="#ffffff"/>
+  <circle cx="151.5" cy="121" r="3.4" fill="#181715"/><circle cx="150.5" cy="120" r="1.1" fill="#ffffff"/>
+  <ellipse cx="120" cy="128" rx="3" ry="1.6" fill="#dcd2c5"/><ellipse cx="158" cy="128" rx="3" ry="1.6" fill="#dcd2c5"/>
+  <path d="M37 129.5 Q139.5 128.5 142 129.5 L139.5 132.5 Z" fill="none"/>
+  <path d="M137 129.5 Q139.5 128.5 142 129.5 L139.5 132.5 Z" fill="#1d1b19"/>
+  <path d="M134 135 Q136.8 137.5 139.5 134.5 Q142.2 137.5 145 135" stroke="#1d1b19" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Sharp whiskers -->
+  <path d="M114 124 L103 122 M114 129 L103 130.5" stroke="#1d1b19" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M164 124 L175 122 M164 129 L175 130.5" stroke="#1d1b19" stroke-width="1.4" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2064" height="2088" viewBox="0 0 344 348" fill="none">
+  <defs>
+    <linearGradient id="rewFloorFade" x1="20" y1="0" x2="200" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e5ddd1" stop-opacity="0"/>
+      <stop offset="1" stop-color="#e5ddd1" stop-opacity="0.85"/>
+    </linearGradient>
+    <clipPath id="rewCatBody">
+      <path d="M118 218 C118 182 126 168 136 150 C140 139 146 135 151 139 C156 144 160 151 163 155 C170 153 179 153 184 155 C188 148 193 140 198 141 C203 142 207 157 208 173 C220 186 244 206 262 232 C281 259 281 290 264 305 C251 315 224 316 196 314 C177 313 158 310 145 300 C131 288 118 254 118 218 Z"/>
+    </clipPath>
+  </defs>
+  <rect x="20" y="307" width="324" height="41" fill="url(#rewFloorFade)"/>
+  <g opacity="0.65">
+    <rect x="281" y="195" width="26" height="113" fill="#cfc7bb"/>
+    <rect x="322" y="216" width="22" height="92" fill="#d9d1c5"/>
+    <g fill="#faf5ec" opacity="0.8">
+      <rect x="286" y="206" width="4" height="5"/><rect x="294" y="206" width="4" height="5"/><rect x="301" y="206" width="3" height="5"/>
+      <rect x="286" y="218" width="4" height="5"/><rect x="294" y="218" width="4" height="5"/><rect x="301" y="218" width="3" height="5"/>
+      <rect x="286" y="230" width="4" height="5"/><rect x="294" y="230" width="4" height="5"/><rect x="301" y="230" width="3" height="5"/>
+      <rect x="328" y="226" width="4" height="5"/><rect x="336" y="226" width="4" height="5"/>
+      <rect x="328" y="238" width="4" height="5"/><rect x="336" y="238" width="4" height="5"/>
+    </g>
+    <rect x="308" y="238" width="24" height="70" fill="#bfb7aa"/>
+    <rect x="272" y="272" width="60" height="36" fill="#9e968a"/>
+    <rect x="306" y="286" width="7" height="7" fill="#ebe3d7"/>
+    <rect x="317" y="286" width="7" height="7" fill="#ebe3d7"/>
+  </g>
+  <line x1="36" y1="308" x2="328" y2="308" stroke="#292623" stroke-width="2.4" stroke-linecap="round"/>
+
+  <circle cx="256" cy="74" r="56" fill="#f1eadf" opacity="0.72"/>
+  <g stroke="#1f1d1b" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M229 94 L208 104 L224 114 L220 129 L246 113 Z" fill="#2c2926"/>
+    <path d="M283 94 L304 104 L288 114 L292 129 L266 113 Z" fill="#2c2926"/>
+    <rect x="240" y="109" width="32" height="19" rx="2" fill="#a8a095"/>
+    <circle cx="256" cy="74" r="39" fill="#ece5da"/>
+    <circle cx="256" cy="74" r="31" fill="#e5ddd1" stroke-width="2"/>
+    <path d="M256 49 L263.5 64 L280 66.5 L268 78 L271 94.5 L256 86.5 L241 94.5 L244 78 L232 66.5 L248.5 64 Z" fill="#22201e" stroke-width="2.5"/>
+  </g>
+
+  <path d="M146 39 Q148.5 50 159 53 Q148.5 56 146 67 Q143.5 56 133 53 Q143.5 50 146 39 Z" fill="#faf6ef" stroke="#1f1d1b" stroke-width="3.2" stroke-linejoin="round"/>
+  <path d="M70 138 Q72.5 150 83 153 Q72.5 156 70 168 Q67.5 156 57 153 Q67.5 150 70 138 Z" fill="#faf6ef" stroke="#1f1d1b" stroke-width="3.2" stroke-linejoin="round"/>
+  <path d="M167 84 Q169 91 176 93 Q169 95 167 102 Q165 95 158 93 Q165 91 167 84 Z" fill="#cfc6b9"/>
+  <path d="M44 176 Q46 182 52 184 Q46 186 44 192 Q42 186 36 184 Q42 182 44 176 Z" fill="#cfc6b9"/>
+  <path d="M10 224 Q12 230 18 232 Q12 234 10 240 Q8 234 2 232 Q8 230 10 224 Z" fill="#cfc6b9"/>
+
+  <!-- Cat body + tail rendered BEHIND the gift box (matches Argon depth order) -->
+  <path d="M262 288 C280 280 302 282 301 296 C300 307 282 309 258 306 Z" fill="#201e1c" stroke="#1a1917" stroke-width="3.4"/>
+  <g clip-path="url(#rewCatBody)">
+    <rect x="110" y="130" width="180" height="190" fill="#faf7f1"/>
+    <path d="M114 182 C118 148 136 132 153 134 C159 135 162 152 156 164 C145 178 128 182 114 182 Z" fill="#201e1c"/>
+    <path d="M170 156 C177 140 193 133 207 139 C216 144 218 170 216 183 C199 182 182 173 170 156 Z" fill="#201e1c"/>
+    <path d="M142 158 L148 144 L155 154 Z" fill="#bda99a"/>
+    <path d="M199 159 L194 145 L186 155 Z" fill="#8f867c"/>
+    <path d="M226 208 C246 204 268 220 274 244 C276 258 265 266 250 262 C233 257 224 235 226 208 Z" fill="#201e1c"/>
+  </g>
+  <path d="M118 218 C118 182 126 168 136 150 C140 139 146 135 151 139 C156 144 160 151 163 155 C170 153 179 153 184 155 C188 148 193 140 198 141 C203 142 207 157 208 173 C220 186 244 206 262 232 C281 259 281 290 264 305 C251 315 224 316 196 314 C177 313 158 310 145 300 C131 288 118 254 118 218 Z" stroke="#1d1b19" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- Cat face details visible cleanly above gift box -->
+  <circle cx="146" cy="176" r="4.5" fill="#ffffff"/><circle cx="146" cy="176" r="3.4" fill="#181715"/><circle cx="145" cy="174.8" r="1.15" fill="#ffffff"/>
+  <circle cx="177" cy="176" r="4.5" fill="#ffffff"/><circle cx="177" cy="176" r="3.4" fill="#181715"/><circle cx="176" cy="174.8" r="1.15" fill="#ffffff"/>
+  <path d="M159 182 Q161.5 180.5 164 182 L161.5 185 Z" fill="#1d1b19"/>
+  <path d="M155 187.5 Q158.2 191 161.5 186.8 Q164.8 191 168 187.5" stroke="#1d1b19" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M135 190 L139 193 M139 190 L143 193" stroke="#b99c8e" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M183 190 L187 193 M187 190 L191 193" stroke="#b99c8e" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M123 176 L111 174 M123 182 L112 184" stroke="#1d1b19" stroke-width="2.1" stroke-linecap="round"/>
+  <path d="M208 177 L220 175 M208 183 L219 185" stroke="#1d1b19" stroke-width="2.1" stroke-linecap="round"/>
+
+  <!-- Gift box & ribbon bow IN FRONT of cat -->
+  <path d="M56 247 C47 248 47 264 58 265" fill="#faf7f1" stroke="#1f1d1b" stroke-width="3.5" stroke-linecap="round"/>
+  <g stroke="#1f1d1b" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M105 216 C92 191 70 198 79 213 C85 220 97 219 105 216 Z" fill="#2b2825" stroke-width="4"/>
+    <path d="M105 216 C118 191 140 198 131 213 C125 220 113 219 105 216 Z" fill="#2b2825" stroke-width="4"/>
+    <rect x="57" y="233" width="97" height="75" rx="3" fill="#f3ede3" stroke-width="3.8"/>
+    <rect x="128" y="233" width="26" height="75" fill="#cfc7bb" stroke="none"/>
+    <rect x="57" y="233" width="97" height="75" rx="3" fill="none" stroke-width="3.8"/>
+    <rect x="54" y="215" width="103" height="20" rx="3" fill="#f6f1e7" stroke-width="3.8"/>
+    <rect x="128" y="216" width="28" height="18" fill="#cfc7bb" stroke="none"/>
+    <rect x="54" y="215" width="103" height="20" rx="3" fill="none" stroke-width="3.8"/>
+    <rect x="96" y="215" width="18" height="93" fill="#262422" stroke-width="3.4"/>
+  </g>
+  <!-- Hugging right paw reaching LEFT out of chest ONTO right edge of gift box -->
+  <path d="M178 236 C160 236 138 242 138 254 C138 265 158 268 178 266" fill="#faf7f1" stroke="#1d1b19" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

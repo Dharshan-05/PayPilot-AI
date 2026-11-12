@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="544" height="720" viewBox="0 0 136 180" fill="none">
+  <defs>
+    <linearGradient id="fgBg" x1="68" y1="50" x2="68" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c9c1b5" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#b2a99c" stop-opacity="0.58"/>
+    </linearGradient>
+    <linearGradient id="fgMid" x1="68" y1="40" x2="68" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9e968b" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#756f66" stop-opacity="0.88"/>
+    </linearGradient>
+  </defs>
+  <!-- Distant ghost spire -->
+  <path d="M98 48V60H91V82H84V180H110V82H105V60H100V48Z" fill="url(#fgBg)"/>
+  <!-- Right stepped apartment tower -->
+  <g opacity="0.85">
+    <rect x="122" y="34" width="14" height="10" fill="#7c756c"/>
+    <rect x="112" y="44" width="24" height="136" fill="url(#fgMid)"/>
+    <!-- Windows on right tower -->
+    <g fill="#f7f2e9" opacity="0.82">
+      <rect x="116" y="54" width="4" height="6" rx="0.5"/>
+      <rect x="124" y="54" width="4" height="6" rx="0.5"/>
+      <rect x="116" y="66" width="4" height="6" rx="0.5"/>
+      <rect x="124" y="66" width="4" height="6" rx="0.5"/>
+      <rect x="116" y="78" width="4" height="6" rx="0.5"/>
+      <rect x="124" y="78" width="4" height="6" rx="0.5"/>
+      <rect x="116" y="90" width="4" height="6" rx="0.5"/>
+      <rect x="124" y="90" width="4" height="6" rx="0.5"/>
+      <rect x="116" y="102" width="4" height="6" rx="0.5"/>
+      <rect x="124" y="102" width="4" height="6" rx="0.5"/>
+    </g>
+    <g fill="#5b554e" opacity="0.55">
+      <rect x="131" y="54" width="3" height="6" rx="0.5"/>
+      <rect x="131" y="66" width="3" height="6" rx="0.5"/>
+      <rect x="131" y="78" width="3" height="6" rx="0.5"/>
+      <rect x="131" y="90" width="3" height="6" rx="0.5"/>
+      <rect x="131" y="102" width="3" height="6" rx="0.5"/>
+    </g>
+  </g>
+  <!-- Center-left mid-rise stepped building -->
+  <g opacity="0.72">
+    <rect x="50" y="71" width="14" height="6" fill="#8f877d"/>
+    <rect x="44" y="77" width="26" height="103" fill="url(#fgMid)"/>
+    <g fill="#f7f2e9" opacity="0.68">
+      <rect x="49" y="85" width="3.5" height="4.5" rx="0.4"/>
+      <rect x="55" y="85" width="3.5" height="4.5" rx="0.4"/>
+      <rect x="61" y="85" width="3.5" height="4.5" rx="0.4"/>
+      <rect x="49" y="95" width="3.5" height="4.5" rx="0.4"/>
+      <rect x="55" y="95" width="3.5" height="4.5" rx="0.4"/>
+      <rect x="61" y="95" width="3.5" height="4.5" rx="0.4"/>
+      <rect x="49" y="105" width="3.5" height="4.5" rx="0.4"/>
+      <rect x="55" y="105" width="3.5" height="4.5" rx="0.4"/>
+      <rect x="61" y="105" width="3.5" height="4.5" rx="0.4"/>
+      <rect x="49" y="115" width="3.5" height="4.5" rx="0.4"/>
+      <rect x="55" y="115" width="3.5" height="4.5" rx="0.4"/>
+      <rect x="61" y="115" width="3.5" height="4.5" rx="0.4"/>
+    </g>
+  </g>
+  <!-- Left low distant buildings -->
+  <g opacity="0.58">
+    <rect x="6" y="138" width="14" height="5" fill="#9c9388"/>
+    <rect x="0" y="143" width="26" height="37" fill="#a8a095"/>
+    <rect x="28" y="150" width="15" height="30" fill="#b4aca1"/>
+    <g fill="#f7f2e9" opacity="0.7">
+      <rect x="4" y="149" width="3" height="3.5"/>
+      <rect x="10" y="149" width="3" height="3.5"/>
+      <rect x="16" y="149" width="3" height="3.5"/>
+      <rect x="4" y="156" width="3" height="3.5"/>
+      <rect x="10" y="156" width="3" height="3.5"/>
+      <rect x="16" y="156" width="3" height="3.5"/>
+    </g>
+  </g>
+  <!-- Foreground dark cornice building on bottom right -->
+  <g>
+    <rect x="97" y="129" width="2.5" height="9" fill="#3a3631"/>
+    <rect x="74" y="137" width="62" height="5" fill="#2e2a26"/>
+    <rect x="77" y="142" width="59" height="38" fill="#3c3833"/>
+    <rect x="66" y="154" width="11" height="26" fill="#4f4a43"/>
+    <!-- Foreground large windows -->
+    <rect x="92" y="150" width="12" height="16" rx="1.5" fill="#e9e2d6" opacity="0.9"/>
+    <rect x="111" y="150" width="12" height="16" rx="1.5" fill="#e9e2d6" opacity="0.9"/>
+    <rect x="129" y="150" width="7" height="16" rx="1" fill="#e9e2d6" opacity="0.9"/>
+    <!-- Dark mullions -->
+    <rect x="92" y="157" width="12" height="1.5" fill="#4e4942"/>
+    <rect x="111" y="157" width="12" height="1.5" fill="#4e4942"/>
+  </g>
+</svg>

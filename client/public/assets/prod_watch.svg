@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1088" viewBox="0 0 80 68" fill="none">
+  <defs>
+    <linearGradient id="caseGrad" x1="23" y1="15" x2="56" y2="53" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#9e988e"/><stop offset="0.5" stop-color="#767068"/><stop offset="1" stop-color="#4e4a44"/></linearGradient>
+    <linearGradient id="strapGrad" x1="40" y1="6" x2="40" y2="18" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2c2a27"/><stop offset="1" stop-color="#171614"/></linearGradient>
+  </defs>
+  <ellipse cx="40" cy="61.5" rx="14" ry="2" fill="#2c2925" opacity="0.16"/>
+  <path d="M29.5 16.5 L31 8.5 Q31.5 6.8 40 6.8 Q48.5 6.8 49 8.5 L50.5 16.5 Z" fill="url(#strapGrad)" stroke="#151412" stroke-width="1.3" stroke-linejoin="round"/>
+  <path d="M29.5 51.5 L31 59.2 Q31.5 60.8 40 60.8 Q48.5 60.8 49 59.2 L50.5 51.5 Z" fill="#1b1917" stroke="#151412" stroke-width="1.3" stroke-linejoin="round"/>
+  <rect x="55" y="25.5" width="3.8" height="7" rx="1.3" fill="#6f6a62" stroke="#181715" stroke-width="1.1"/>
+  <rect x="54.8" y="36.5" width="2.4" height="7.2" rx="0.8" fill="#524d47" stroke="#181715" stroke-width="1"/>
+  <rect x="23" y="15.2" width="33" height="37.6" rx="7.2" fill="url(#caseGrad)" stroke="#181715" stroke-width="1.4"/>
+  <rect x="25.8" y="18" width="27.4" height="32" rx="5.2" fill="#131211" stroke="#2c2926" stroke-width="0.9"/>
+  <circle cx="32.5" cy="25" r="3.4" stroke="#5d848b" stroke-width="1.35" stroke-dasharray="15 6" stroke-linecap="round"/>
+  <circle cx="32.5" cy="43" r="3.4" stroke="#5d848b" stroke-width="1.35" stroke-dasharray="14 7" stroke-linecap="round"/>
+  <circle cx="46.2" cy="43" r="3.1" fill="#2c3a3d" stroke="#7d8c8e" stroke-width="0.9"/>
+  <path d="M31 35.5 Q39 34 46.5 25.5 Q42.5 36.5 34.5 38.5 Z" fill="#eae5dc" opacity="0.85"/>
+  <circle cx="39.5" cy="34" r="2.1" fill="#ffffff"/>
+  <line x1="39.5" y1="34" x2="35" y2="29" stroke="#f5efe6" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="39.5" y1="34" x2="46.5" y2="28" stroke="#f5efe6" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="M28 21.5 Q36 18.8 49 20.5" stroke="#ffffff" stroke-width="0.85" stroke-linecap="round" opacity="0.28"/>
+</svg>

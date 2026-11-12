@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1088" viewBox="0 0 80 68" fill="none">
+  <defs>
+    <linearGradient id="lidGrad" x1="12" y1="10" x2="68" y2="50" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#35322f"/><stop offset="1" stop-color="#22201e"/></linearGradient>
+    <linearGradient id="skyGrad" x1="16" y1="13" x2="64" y2="42" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c9c2b8"/><stop offset="0.55" stop-color="#ece6dc"/><stop offset="1" stop-color="#d5cec3"/></linearGradient>
+    <linearGradient id="baseGrad" x1="40" y1="49" x2="40" y2="60" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#48443f"/><stop offset="0.7" stop-color="#2b2825"/><stop offset="1" stop-color="#7c766e"/></linearGradient>
+    <clipPath id="scrClip"><rect x="15.5" y="13.5" width="49" height="32.5" rx="1.2"/></clipPath>
+  </defs>
+  <ellipse cx="40" cy="60.8" rx="34.5" ry="2.2" fill="#2c2925" opacity="0.18"/>
+  <rect x="12" y="10" width="56" height="39.5" rx="3" fill="url(#lidGrad)" stroke="#181715" stroke-width="1.4"/>
+  <circle cx="40" cy="11.7" r="0.65" fill="#706b64"/>
+  <g clip-path="url(#scrClip)">
+    <rect x="15.5" y="13.5" width="49" height="32.5" fill="url(#skyGrad)"/>
+    <circle cx="43.5" cy="28" r="7.5" fill="#fffdf8" opacity="0.88"/>
+    <path d="M15 46 L27 33 L35 39 L46 27.5 L65 46 Z" fill="#5e5953"/>
+    <path d="M29 46 L46 29.5 L57 41 L65 36 L65 46 Z" fill="#3a3733" opacity="0.9"/>
+    <path d="M35 13.5 L64.5 13.5 L64.5 34 L48 13.5 Z" fill="#ffffff" opacity="0.22"/>
+  </g>
+  <rect x="15.5" y="13.5" width="49" height="32.5" rx="1.2" stroke="#181715" stroke-width="0.9"/>
+  <path d="M12 49.5 L68 49.5 L74.2 57.6 Q74.8 58.6 73.2 59.3 L6.8 59.3 Q5.2 58.6 5.8 57.6 Z" fill="url(#baseGrad)" stroke="#181715" stroke-width="1.35" stroke-linejoin="round"/>
+  <path d="M13.5 50.6 L66.5 50.6 L69.8 55.2 L10.2 55.2 Z" fill="#1e1c1a"/>
+  <g stroke="#5b564f" stroke-width="0.45" opacity="0.8">
+    <line x1="12.8" y1="52" x2="67.2" y2="52"/><line x1="11.8" y1="53.5" x2="68.2" y2="53.5"/>
+  </g>
+  <path d="M6.3 58 L73.7 58 L73.2 59.5 L6.8 59.5 Z" fill="#8e887f"/>
+  <rect x="35.5" y="57.7" width="9" height="1.4" rx="0.7" fill="#383531"/>
+</svg>

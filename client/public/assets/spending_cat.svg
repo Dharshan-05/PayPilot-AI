@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="680" viewBox="0 0 108 68" fill="none">
+  <defs>
+    <clipPath id="catSilhouette">
+      <path d="M21 71 C19.5 60 17.5 51 14 44.5 C9.5 41 8.5 37.5 11.5 33 C14 27 16 19.5 19.5 18.5 C23.5 17.5 29.5 24 34 27.5 C39.5 26.5 45.5 26.2 50 27 C54.5 22.8 60 18.8 64 20.8 C67.5 22.8 70.5 31 73.5 37.5 C79.5 44.5 82.5 55.5 84 71 Z"/>
+    </clipPath>
+  </defs>
+  <line x1="78" y1="26" x2="84" y2="19" stroke="#4a4641" stroke-width="2.1" stroke-linecap="round"/>
+  <line x1="84.5" y1="28.5" x2="90" y2="23.5" stroke="#4a4641" stroke-width="1.7" stroke-linecap="round"/>
+  <g clip-path="url(#catSilhouette)">
+    <rect x="0" y="0" width="108" height="72" fill="#faf7f1"/>
+    <path d="M7 16 L35 16 C35 30 31.5 38.5 25.5 43.5 C21 47.2 15 49 8 49 Z" fill="#201e1c"/>
+    <path d="M46 27 C52 21 59 17 66 18 L86 18 L86 62 C76 61 65 57.5 57 52 C49.5 46.8 44 41.5 41.5 37.5 C42 33 43.8 29.5 46 27 Z" fill="#201e1c"/>
+    <path d="M17.5 29.5 L19.8 23 L24.5 27 Z" fill="#8f867c" opacity="0.7"/>
+    <path d="M64 31 L62 24 L57 28 Z" fill="#8f867c" opacity="0.7"/>
+  </g>
+  <path d="M21 71 C19.5 60 17.5 51 14 44.5 C9.5 41 8.5 37.5 11.5 33 C14 27 16 19.5 19.5 18.5 C23.5 17.5 29.5 24 34 27.5 C39.5 26.5 45.5 26.2 50 27 C54.5 22.8 60 18.8 64 20.8 C67.5 22.8 70.5 31 73.5 37.5 C79.5 44.5 82.5 55.5 84 71" stroke="#1d1b19" stroke-width="2.9" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="27.5" cy="42.5" r="3" fill="#faf7f1"/><circle cx="27.5" cy="42.5" r="2.2" fill="#171614"/><circle cx="26.8" cy="41.8" r="0.75" fill="#ffffff"/>
+  <circle cx="44.5" cy="43.5" r="3" fill="#faf7f1"/><circle cx="44.5" cy="43.5" r="2.2" fill="#171614"/><circle cx="43.8" cy="42.8" r="0.75" fill="#ffffff"/>
+  <path d="M31.5 53.2 Q33.8 52 36 53.2 L33.8 55.6 Z" fill="#1d1b19"/>
+  <path d="M30.2 58.5 Q32 60.4 33.8 58 Q35.6 60.4 37.6 58.5" stroke="#1d1b19" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M18 52 L11 51 M18 56 L12 58" stroke="#1d1b19" stroke-width="1.3" stroke-linecap="round"/>
+  <path d="M51 70 C51.5 63.2 55.5 60.5 61 61 C66 61.5 69.5 64.5 70 70" fill="#faf7f1" stroke="#1d1b19" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
