@@ -1,0 +1,51 @@
+@import "ag-grid-community/styles/ag-grid.css";
+@import "ag-grid-community/styles/ag-theme-quartz.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+}
+
+/* Custom PayPal Fintech styling for AG Grid Quartz theme */
+.ag-theme-quartz {
+  --ag-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ag-font-size: 13px;
+  --ag-header-background-color: #f8fafc;
+  --ag-header-foreground-color: #001c64;
+  --ag-header-cell-hover-background-color: #f1f5f9;
+  --ag-header-cell-moving-background-color: #e2e8f0;
+  --ag-row-hover-color: #f0f7ff;
+  --ag-selected-row-background-color: #e0f2fe;
+  --ag-border-color: #e2e8f0;
+  --ag-odd-row-background-color: #ffffff;
+  --ag-even-row-background-color: #fafbfc;
+  --ag-cell-horizontal-padding: 14px;
+  --ag-header-column-separator-display: block;
+  --ag-header-column-separator-color: #e2e8f0;
+  --ag-range-selection-border-color: #003087;
+  --ag-focus-ring-color: #0079c1;
+  --ag-border-radius: 12px;
+}
+
+.ag-theme-quartz .ag-header-cell-text {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #001c64;
+}
+
+.ag-theme-quartz .ag-root-wrapper {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+}
