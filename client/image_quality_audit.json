@@ -1,0 +1,578 @@
+{
+  "project": "d:\\PROJECT\\PAY FRD\\paypal-dashboard",
+  "total_assets_audited": 19,
+  "backup_directory": "C:\\Users\\Dharshan\\.gemini\\antigravity\\brain\\1da2b322-f339-42e8-9a63-f6efd0f5321c\\scratch\\original_assets",
+  "audit_rule": "Assets were NOT marked crisp merely because CSS scale <= 1.0. Every raster source was inspected for intrinsic pixel count, 1x supersampling margin, baked-in anti-aliasing, and vectorizability.",
+  "assets": [
+    {
+      "filename": "agents_cat.png",
+      "intrinsic_width": 216,
+      "intrinsic_height": 204,
+      "file_size_bytes": 48758,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 44064,
+        "soft_aa_gradient_ratio": 0.189,
+        "strong_edge_pixel_ratio": 0.158,
+        "max_luminance_gradient": 111.0,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/components/YourAgentsCard.tsx",
+        "src/pages/AgentsPage.tsx"
+      ],
+      "largest_displayed_size": "216.0x204.0 (box 216.0x204.0, home @ 2560x1440)",
+      "smallest_displayed_size": "108.0x102.0 (box 108.0x102.0, home @ 1024x768)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "regenerate_highres_png",
+      "recommended_target": "432x408",
+      "diagnosis": "Agents card cat illustration; 216x204 lacks stroke crispness."
+    },
+    {
+      "filename": "agents_skyline.png",
+      "intrinsic_width": 96,
+      "intrinsic_height": 180,
+      "file_size_bytes": 14415,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 17280,
+        "soft_aa_gradient_ratio": 0.1565,
+        "strong_edge_pixel_ratio": 0.0403,
+        "max_luminance_gradient": 42.8,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/components/YourAgentsCard.tsx",
+        "src/pages/AgentsPage.tsx"
+      ],
+      "largest_displayed_size": "96.0x180.0 (box 96.0x180.0, home @ 2560x1440)",
+      "smallest_displayed_size": "48.0x90.0 (box 48.0x90.0, home @ 1024x768)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "convert_to_svg",
+      "recommended_target": "vector_svg (384x720 fallback)",
+      "diagnosis": "Geometric monochrome building silhouettes and window rectangles; vector SVG renders razor-sharp."
+    },
+    {
+      "filename": "ai_cat.png",
+      "intrinsic_width": 248,
+      "intrinsic_height": 196,
+      "file_size_bytes": 48561,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 48608,
+        "soft_aa_gradient_ratio": 0.1789,
+        "strong_edge_pixel_ratio": 0.1247,
+        "max_luminance_gradient": 116.2,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/components/AiShoppingCard.tsx",
+        "src/pages/AiShoppingPage.tsx",
+        "src/pages/ProductDetailsPage.tsx"
+      ],
+      "largest_displayed_size": "248.0x196.0 (box 248.0x196.0, home @ 2560x1440)",
+      "smallest_displayed_size": "62.0x49.0 (box 62.0x49.0, routes_1920 @ /ai-shopping)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "regenerate_highres_png",
+      "recommended_target": "496x392",
+      "diagnosis": "AI shopping cat illustration; 248x196 is only 1x its desktop container and visibly soft."
+    },
+    {
+      "filename": "ai_products_area.png",
+      "intrinsic_width": 356,
+      "intrinsic_height": 152,
+      "file_size_bytes": 48809,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 54112,
+        "soft_aa_gradient_ratio": 0.1419,
+        "strong_edge_pixel_ratio": 0.0957,
+        "max_luminance_gradient": 100.5,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [],
+      "largest_displayed_size": "unused (0x0)",
+      "smallest_displayed_size": "unused (0x0)",
+      "inherently_low_resolution": false,
+      "downsampling_softness_present": false,
+      "recommended_action": "unused_legacy_crop",
+      "recommended_target": "unused",
+      "diagnosis": "Legacy Argon composite slice not imported anywhere in src/."
+    },
+    {
+      "filename": "avatar_cat.png",
+      "intrinsic_width": 72,
+      "intrinsic_height": 72,
+      "file_size_bytes": 9294,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 5184,
+        "soft_aa_gradient_ratio": 0.3237,
+        "strong_edge_pixel_ratio": 0.2103,
+        "max_luminance_gradient": 101.9,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/components/UserMenu.tsx",
+        "src/pages/SettingsPage.tsx",
+        "src/pages/UserProfilePage.tsx"
+      ],
+      "largest_displayed_size": "72.0x72.0 (box 72.0x72.0, routes_1920 @ /settings)",
+      "smallest_displayed_size": "36.0x36.0 (box 36.0x36.0, home @ 2560x1440)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "regenerate_highres_png",
+      "recommended_target": "288x288",
+      "diagnosis": "Header/profile avatar; 72x72 tiny raster is soft even inside 36x36/64x64 avatars."
+    },
+    {
+      "filename": "fraudguard_skyline.png",
+      "intrinsic_width": 136,
+      "intrinsic_height": 180,
+      "file_size_bytes": 20109,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 24480,
+        "soft_aa_gradient_ratio": 0.183,
+        "strong_edge_pixel_ratio": 0.0579,
+        "max_luminance_gradient": 75.5,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/components/FraudGuardCard.tsx",
+        "src/pages/FraudGuardPage.tsx",
+        "src/pages/SendMoneyPage.tsx"
+      ],
+      "largest_displayed_size": "136.0x180.0 (box 136.0x180.0, home @ 2560x1440)",
+      "smallest_displayed_size": "68.0x90.0 (box 68.0x90.0, home @ 390x844)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "convert_to_svg",
+      "recommended_target": "vector_svg (544x720 fallback)",
+      "diagnosis": "Geometric monochrome buildings and window grids; vector SVG renders razor-sharp at every zoom/DPR."
+    },
+    {
+      "filename": "hero_bg.png",
+      "intrinsic_width": 1276,
+      "intrinsic_height": 340,
+      "file_size_bytes": 233974,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": true,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0133
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 433840,
+        "soft_aa_gradient_ratio": 0.0897,
+        "strong_edge_pixel_ratio": 0.0457,
+        "max_luminance_gradient": 120.4,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/components/HeroBanner.tsx"
+      ],
+      "largest_displayed_size": "1276.0x340.0 (box 1276.0x322.0, home @ 2560x1440)",
+      "smallest_displayed_size": "788.1x210.0 (box 490.2x210.0, home @ 768x1024)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "regenerate_highres_png",
+      "recommended_target": "2552x680",
+      "diagnosis": "Complex illustrated cat + architectural skyline banner; 1276x340 source shows baked-in line softness at 100% zoom and constrains full-width hero above 1276px."
+    },
+    {
+      "filename": "hero_left_skyline.png",
+      "intrinsic_width": 356,
+      "intrinsic_height": 76,
+      "file_size_bytes": 26025,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 27056,
+        "soft_aa_gradient_ratio": 0.1767,
+        "strong_edge_pixel_ratio": 0.0631,
+        "max_luminance_gradient": 64.9,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [],
+      "largest_displayed_size": "unused (0x0)",
+      "smallest_displayed_size": "unused (0x0)",
+      "inherently_low_resolution": false,
+      "downsampling_softness_present": false,
+      "recommended_action": "unused_legacy_crop",
+      "recommended_target": "unused",
+      "diagnosis": "Legacy Argon composite slice not imported anywhere in src/."
+    },
+    {
+      "filename": "hero_right.png",
+      "intrinsic_width": 744,
+      "intrinsic_height": 340,
+      "file_size_bytes": 212871,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 252960,
+        "soft_aa_gradient_ratio": 0.15,
+        "strong_edge_pixel_ratio": 0.0805,
+        "max_luminance_gradient": 120.4,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [],
+      "largest_displayed_size": "unused (0x0)",
+      "smallest_displayed_size": "unused (0x0)",
+      "inherently_low_resolution": false,
+      "downsampling_softness_present": false,
+      "recommended_action": "unused_legacy_crop",
+      "recommended_target": "unused",
+      "diagnosis": "Legacy Argon composite slice not imported anywhere in src/."
+    },
+    {
+      "filename": "prod_headphones.png",
+      "intrinsic_width": 76,
+      "intrinsic_height": 68,
+      "file_size_bytes": 7922,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 5168,
+        "soft_aa_gradient_ratio": 0.2171,
+        "strong_edge_pixel_ratio": 0.2438,
+        "max_luminance_gradient": 95.9,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/data/products.ts"
+      ],
+      "largest_displayed_size": "76.0x68.0 (box 76.0x68.0, home @ 2560x1440)",
+      "smallest_displayed_size": "24.0x21.5 (box 24.0x42.0, home @ 1024x768)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "regenerate_highres_png",
+      "recommended_target": "304x272",
+      "diagnosis": "Product thumbnail; 76x68 has muddy ink contours."
+    },
+    {
+      "filename": "prod_laptop.png",
+      "intrinsic_width": 80,
+      "intrinsic_height": 68,
+      "file_size_bytes": 8093,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 5440,
+        "soft_aa_gradient_ratio": 0.486,
+        "strong_edge_pixel_ratio": 0.2574,
+        "max_luminance_gradient": 78.3,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/data/products.ts"
+      ],
+      "largest_displayed_size": "80.0x68.0 (box 80.0x68.0, home @ 2560x1440)",
+      "smallest_displayed_size": "24.0x20.4 (box 24.0x42.0, home @ 1024x768)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "regenerate_highres_png",
+      "recommended_target": "320x272",
+      "diagnosis": "Product thumbnail; 80x68 has fuzzy screen/keyboard lines."
+    },
+    {
+      "filename": "prod_watch.png",
+      "intrinsic_width": 80,
+      "intrinsic_height": 68,
+      "file_size_bytes": 7123,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 5440,
+        "soft_aa_gradient_ratio": 0.2776,
+        "strong_edge_pixel_ratio": 0.252,
+        "max_luminance_gradient": 91.1,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/data/products.ts"
+      ],
+      "largest_displayed_size": "80.0x68.0 (box 80.0x68.0, home @ 2560x1440)",
+      "smallest_displayed_size": "24.0x20.4 (box 24.0x42.0, home @ 1024x768)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "regenerate_highres_png",
+      "recommended_target": "320x272",
+      "diagnosis": "Product thumbnail; 80x68 lacks sharp dial/strap detail."
+    },
+    {
+      "filename": "rewards_art.png",
+      "intrinsic_width": 344,
+      "intrinsic_height": 348,
+      "file_size_bytes": 113357,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 119712,
+        "soft_aa_gradient_ratio": 0.1648,
+        "strong_edge_pixel_ratio": 0.1192,
+        "max_luminance_gradient": 121.1,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/components/RewardsCard.tsx",
+        "src/pages/RewardsPage.tsx"
+      ],
+      "largest_displayed_size": "326.0x329.8 (box 326.0x330.0, home @ 2560x1440)",
+      "smallest_displayed_size": "152.0x153.8 (box 152.0x154.0, home @ 1024x768)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "regenerate_highres_png",
+      "recommended_target": "688x696",
+      "diagnosis": "Feature rewards cat + coins illustration; 344x348 has baked-in soft line art edges and insufficient detail on desktop/retina."
+    },
+    {
+      "filename": "sidebar_cat.png",
+      "intrinsic_width": 236,
+      "intrinsic_height": 176,
+      "file_size_bytes": 40947,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 41536,
+        "soft_aa_gradient_ratio": 0.1749,
+        "strong_edge_pixel_ratio": 0.1062,
+        "max_luminance_gradient": 95.0,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/components/StaticCatImage.tsx"
+      ],
+      "largest_displayed_size": "236.0x176.0 (box 236.0x176.0, home @ 2560x1440)",
+      "smallest_displayed_size": "0.0x0.0 (box 0.0x0.0, home @ 768x1024)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "regenerate_highres_png",
+      "recommended_target": "472x352",
+      "diagnosis": "Primary sidebar cat illustration; 236x176 intrinsic pixels equal 1x display size with zero retina/supersampling margin and baked-in anti-aliasing."
+    },
+    {
+      "filename": "spending_cat.png",
+      "intrinsic_width": 108,
+      "intrinsic_height": 68,
+      "file_size_bytes": 9886,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 7344,
+        "soft_aa_gradient_ratio": 0.2333,
+        "strong_edge_pixel_ratio": 0.1894,
+        "max_luminance_gradient": 93.3,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/components/SpendingOverviewCard.tsx",
+        "src/pages/AnalyticsPage.tsx"
+      ],
+      "largest_displayed_size": "108.0x68.0 (box 108.0x68.0, home @ 2560x1440)",
+      "smallest_displayed_size": "54.0x34.0 (box 54.0x34.0, home @ 1024x768)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "regenerate_highres_png",
+      "recommended_target": "324x204",
+      "diagnosis": "Peeking cat illustration; 108x68 is severely pixel-limited so fur/whisker strokes appear soft even at 1x CSS size."
+    },
+    {
+      "filename": "tx_apple.png",
+      "intrinsic_width": 48,
+      "intrinsic_height": 48,
+      "file_size_bytes": 4645,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 2304,
+        "soft_aa_gradient_ratio": 0.2795,
+        "strong_edge_pixel_ratio": 0.4058,
+        "max_luminance_gradient": 98.0,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [],
+      "largest_displayed_size": "unused (0x0)",
+      "smallest_displayed_size": "unused (0x0)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": false,
+      "recommended_action": "convert_to_svg",
+      "recommended_target": "vector_svg (already inline SVG)",
+      "diagnosis": "BrandIcons.tsx already uses inline SVG; provide crisp SVG file for asset parity."
+    },
+    {
+      "filename": "tx_netflix.png",
+      "intrinsic_width": 48,
+      "intrinsic_height": 48,
+      "file_size_bytes": 4647,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 2304,
+        "soft_aa_gradient_ratio": 0.4332,
+        "strong_edge_pixel_ratio": 0.227,
+        "max_luminance_gradient": 46.2,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/components/BrandIcons.tsx"
+      ],
+      "largest_displayed_size": "36.0x36.0 (box 36.0x36.0, home @ 2560x1440)",
+      "smallest_displayed_size": "32.0x32.0 (box 32.0x32.0, home @ 1440x900)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "convert_to_svg",
+      "recommended_target": "vector_svg",
+      "diagnosis": "Simple geometric 'N' ribbon mark; 48x48 raster is visibly soft, should be crisp inline SVG + SVG asset."
+    },
+    {
+      "filename": "tx_paypal.png",
+      "intrinsic_width": 48,
+      "intrinsic_height": 48,
+      "file_size_bytes": 3780,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 2304,
+        "soft_aa_gradient_ratio": 0.2682,
+        "strong_edge_pixel_ratio": 0.2031,
+        "max_luminance_gradient": 90.3,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [],
+      "largest_displayed_size": "unused (0x0)",
+      "smallest_displayed_size": "unused (0x0)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": false,
+      "recommended_action": "convert_to_svg",
+      "recommended_target": "vector_svg (already inline SVG)",
+      "diagnosis": "BrandIcons.tsx already uses inline SVG; provide crisp SVG file for asset parity."
+    },
+    {
+      "filename": "tx_steam.png",
+      "intrinsic_width": 48,
+      "intrinsic_height": 48,
+      "file_size_bytes": 4926,
+      "format": "PNG",
+      "mode": "RGBA",
+      "alpha_transparency": {
+        "has_alpha": false,
+        "transparent_pixel_ratio": 0.0,
+        "semi_transparent_aa_ratio": 0.0
+      },
+      "pixel_detail_metrics": {
+        "total_pixels": 2304,
+        "soft_aa_gradient_ratio": 0.3394,
+        "strong_edge_pixel_ratio": 0.4336,
+        "max_luminance_gradient": 89.7,
+        "baked_in_antialiasing": true
+      },
+      "used_in": [
+        "src/components/BrandIcons.tsx"
+      ],
+      "largest_displayed_size": "36.0x36.0 (box 36.0x36.0, home @ 2560x1440)",
+      "smallest_displayed_size": "32.0x32.0 (box 32.0x32.0, home @ 1440x900)",
+      "inherently_low_resolution": true,
+      "downsampling_softness_present": true,
+      "recommended_action": "convert_to_svg",
+      "recommended_target": "vector_svg",
+      "diagnosis": "Simple circular monochrome emblem; 48x48 raster shows edge softness, should be crisp inline SVG + SVG asset."
+    }
+  ]
+}
