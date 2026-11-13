@@ -1,5 +1,5 @@
 import { prisma } from "./client";
-import { PaymentOrder, AIAuditLog, WebhookEvent, User } from "@prisma/client";
+import { PaymentOrder, AIAuditLog, WebhookEvent, User, Prisma } from "@prisma/client";
 import { Logger } from "../observability/logger";
 import { PaymentStateMachine } from "../paypal/state-machine";
 
@@ -58,21 +58,86 @@ export class DatabaseRepository {
   // -------------------------------------------------------------
   // Order Operations
   // -------------------------------------------------------------
+  // Order Operations (Multi-table PostgreSQL Transaction Synchronized)
+  // -------------------------------------------------------------
   async createPaymentOrder(params: CreateOrderParams): Promise<PaymentOrder> {
     log.debug("Creating payment order record", { internalReference: params.internalReference });
     try {
-      return await prisma.paymentOrder.create({
-        data: {
-          internalReference: params.internalReference,
-          paypalOrderId: params.paypalOrderId,
-          amount: params.amount,
-          currency: params.currency.toUpperCase(),
-          status: "CREATED",
-          customerEmail: params.customerEmail,
-          description: params.description,
-          metadata: params.metadata ? JSON.stringify(params.metadata) : null,
-          userId: params.userId,
-        },
+      return await prisma.$transaction(async (tx) => {
+        // 1. Create or retrieve associated Customer
+        const customerEmail = params.customerEmail || "demo.customer@paypilot.ai";
+        const customerName = params.customerEmail ? params.customerEmail.split("@")[0] : "Demo Customer";
+        const customer = await tx.customer.upsert({
+          where: { email: customerEmail },
+          update: {},
+          create: {
+            externalId: `CUST-${Date.now().toString(36).toUpperCase()}`,
+            name: customerName,
+            email: customerEmail,
+            country: "US",
+            status: "ACTIVE",
+          },
+        });
+
+        // 2. Create PaymentOrder
+        const paymentOrder = await tx.paymentOrder.create({
+          data: {
+            internalReference: params.internalReference,
+            paypalOrderId: params.paypalOrderId,
+            amount: new Prisma.Decimal(params.amount),
+            currency: params.currency.toUpperCase(),
+            status: "CREATED",
+            customerEmail: params.customerEmail,
+            description: params.description,
+            metadata: params.metadata ? JSON.stringify(params.metadata) : null,
+            userId: params.userId,
+          },
+        });
+
+        // 3. Create normalized Order
+        const normalizedOrder = await tx.order.create({
+          data: {
+            orderNumber: params.internalReference,
+            customerId: customer.id,
+            status: "PENDING",
+            amount: new Prisma.Decimal(params.amount),
+            currency: params.currency.toUpperCase(),
+            paypalOrderId: params.paypalOrderId,
+          },
+        });
+
+        // 4. Create Payment record
+        const payment = await tx.payment.create({
+          data: {
+            orderId: normalizedOrder.id,
+            customerId: customer.id,
+            paypalOrderId: params.paypalOrderId,
+            status: "INITIATED",
+            amount: new Prisma.Decimal(params.amount),
+            currency: params.currency.toUpperCase(),
+            paymentMethod: "PayPal Sandbox",
+            payerEmail: params.customerEmail,
+          },
+        });
+
+        // 5. Create Transaction record
+        await tx.transaction.create({
+          data: {
+            paymentId: payment.id,
+            customerId: customer.id,
+            paypalOrderId: params.paypalOrderId,
+            type: "PAYMENT",
+            status: "PENDING",
+            amount: new Prisma.Decimal(params.amount),
+            currency: params.currency.toUpperCase(),
+            riskScore: 10,
+            riskLevel: "LOW",
+            description: params.description || `Order ${params.internalReference}`,
+            metadata: params.metadata ? JSON.stringify(params.metadata) : null,
+          },
+        });
+
+        return paymentOrder;
       });
     } catch (err: any) {
       if (err.code === "P2002") {
@@ -162,36 +227,88 @@ export class DatabaseRepository {
       return existing;
     }
 
-    const updatedOrder = await prisma.paymentOrder.update({
-      where: { paypalOrderId },
-      data: {
-        paypalCaptureId: captureId,
-        status: "CAPTURED",
-        ...(metadataUpdate && {
-          metadata: JSON.stringify(metadataUpdate),
-        }),
-      },
-    });
+    return await prisma.$transaction(async (tx) => {
+      // 1. Update PaymentOrder
+      const updatedOrder = await tx.paymentOrder.update({
+        where: { paypalOrderId },
+        data: {
+          paypalCaptureId: captureId,
+          status: "CAPTURED",
+          ...(metadataUpdate && {
+            metadata: JSON.stringify(metadataUpdate),
+          }),
+        },
+      });
 
-    // Fulfill associated CommerceProposal and decrement authoritative inventory
-    try {
-      const proposal = await prisma.commerceProposal.findUnique({
+      // 2. Synchronize normalized Order
+      await tx.order.updateMany({
+        where: { paypalOrderId },
+        data: { status: "COMPLETED" },
+      });
+
+      // 3. Synchronize normalized Payment
+      await tx.payment.updateMany({
+        where: { paypalOrderId },
+        data: {
+          paypalCaptureId: captureId,
+          status: "COMPLETED",
+          capturedAt: new Date(),
+        },
+      });
+
+      // 4. Synchronize normalized Transaction
+      await tx.transaction.updateMany({
+        where: { paypalOrderId },
+        data: {
+          paypalCaptureId: captureId,
+          status: "COMPLETED",
+        },
+      });
+
+      // 5. Update Customer spend stats if customer is identifiable
+      if (existing.customerEmail) {
+        await tx.customer.updateMany({
+          where: { email: existing.customerEmail },
+          data: {
+            totalSpent: { increment: existing.amount },
+            transactionCount: { increment: 1 },
+          },
+        });
+      }
+
+      // 6. Record Audit Log for compliance
+      await tx.auditLog.create({
+        data: {
+          action: "PAYMENT_CAPTURED",
+          entity: "Payment",
+          entityId: captureId,
+          details: JSON.stringify({
+            paypalOrderId,
+            amount: existing.amount.toString(),
+            currency: existing.currency,
+            customerEmail: existing.customerEmail,
+          }),
+        },
+      });
+
+      // 7. Fulfill associated CommerceProposal and decrement authoritative inventory
+      const proposal = await tx.commerceProposal.findUnique({
         where: { paymentOrderId: existing.id },
       });
 
       if (proposal && proposal.status !== "COMPLETED") {
-        await prisma.commerceProposal.update({
+        await tx.commerceProposal.update({
           where: { id: proposal.id },
           data: { status: "COMPLETED" },
         });
 
-        const product = await prisma.product.findUnique({
+        const product = await tx.product.findUnique({
           where: { id: proposal.productId },
         });
 
         if (product) {
           const nextInventory = Math.max(0, product.inventory - proposal.quantity);
-          await prisma.product.update({
+          await tx.product.update({
             where: { id: product.id },
             data: {
               inventory: nextInventory,
@@ -206,11 +323,9 @@ export class DatabaseRepository {
           });
         }
       }
-    } catch (invErr: any) {
-      log.warn("Failed to decrement inventory for captured order proposal", { err: invErr.message });
-    }
 
-    return updatedOrder;
+      return updatedOrder;
+    });
   }
 
   async updateOrderStatus(paypalOrderId: string, status: string, errorMessage?: string): Promise<PaymentOrder | null> {

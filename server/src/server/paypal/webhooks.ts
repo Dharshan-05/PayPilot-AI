@@ -30,6 +30,7 @@ export class PayPalWebhookHandler {
         clientId: config.PAYPAL_CLIENT_ID,
         clientSecret: config.PAYPAL_CLIENT_SECRET,
         webhookId: config.PAYPAL_WEBHOOK_ID,
+        provider: config.PAYPAL_PROVIDER,
       });
     this.db = db || dbRepository;
     this.registerDefaultHandlers();

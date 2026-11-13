@@ -103,8 +103,8 @@ export class MultiFactorRankingEngine {
       if (b.evidence.overallScore !== a.evidence.overallScore) {
         return b.evidence.overallScore - a.evidence.overallScore;
       }
-      if (a.product.price !== b.product.price) {
-        return a.product.price - b.product.price;
+      if (Number(a.product.price) !== Number(b.product.price)) {
+        return Number(a.product.price) - Number(b.product.price);
       }
       return a.product.sku.localeCompare(b.product.sku);
     });
@@ -167,7 +167,7 @@ export class MultiFactorRankingEngine {
 
     if (criteria.maxBudget && criteria.maxBudget > 0) {
       const budget = criteria.maxBudget;
-      const price = product.price;
+      const price = Number(product.price);
 
       if (price <= budget * 0.9) {
         budgetFit = "UNDER_BUDGET";
@@ -269,7 +269,7 @@ export class MultiFactorRankingEngine {
       whyRecommended,
       tradeoffs,
       facts: {
-        price: product.price,
+        price: Number(product.price),
         currency: product.currency,
         inventory: product.inventory,
         stockStatus: product.stockStatus,
@@ -291,13 +291,13 @@ export class MultiFactorRankingEngine {
     // 2. BUDGET OPTION: The cheapest in-stock option that is within or under budget
     const inStock = ranked.filter((r) => r.product.stockStatus !== "OUT_OF_STOCK");
     if (inStock.length > 1) {
-      const cheapest = [...inStock].sort((a, b) => a.product.price - b.product.price)[0];
+      const cheapest = [...inStock].sort((a, b) => Number(a.product.price) - Number(b.product.price))[0];
       if (cheapest && cheapest.product.id !== top.product.id) {
         cheapest.evidence.badge = "BUDGET OPTION";
       }
 
       // 3. PREMIUM OPTION: Highest priced option with quality score >= 0.8
-      const premium = [...inStock].sort((a, b) => b.product.price - a.product.price)[0];
+      const premium = [...inStock].sort((a, b) => Number(b.product.price) - Number(a.product.price))[0];
       if (
         premium &&
         premium.product.id !== top.product.id &&

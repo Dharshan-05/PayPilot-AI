@@ -27,6 +27,15 @@ const SENSITIVE_KEY_PATTERNS = [
 
 export function redactSensitiveData<T>(obj: T): T {
   if (obj === null || obj === undefined) return obj;
+  if (obj instanceof Date) return obj;
+  if (
+    typeof obj === "object" &&
+    ((obj as any)?._isDecimal ||
+      (obj as any)?.constructor?.name === "Decimal" ||
+      ((obj as any)?.d && (obj as any)?.s !== undefined))
+  ) {
+    return obj;
+  }
   if (typeof obj === "string") {
     return obj.replace(
       /(?:bearer|token|secret|key|authorization)\s*[:=]\s*['"]?[a-zA-Z0-9_\-\.]{8,}['"]?/gi,

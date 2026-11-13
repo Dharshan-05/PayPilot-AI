@@ -58,7 +58,7 @@ describe("Phase 6 — Tool Execution Engine & Authoritative Governance", () => {
 
     expect(result.success).toBe(true);
     expect(result.data.proposalNumber).toMatch(/^PROP-/);
-    expect(result.data.totalAmount).toBe(product!.price);
+    expect(Number(result.data.totalAmount)).toBe(Number(product!.price));
 
     // Verify persisted in DB
     const persisted = await prisma.commerceProposal.findUnique({

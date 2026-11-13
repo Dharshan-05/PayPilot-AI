@@ -51,7 +51,7 @@ describe("Phase 4 — Intelligent Search & Product Intelligence APIs", () => {
     expect(resAsc.status).toBe(200);
     const resultsAsc = bodyAsc.data.results;
     if (resultsAsc.length >= 2) {
-      expect(resultsAsc[0].product.price).toBeLessThanOrEqual(resultsAsc[1].product.price);
+      expect(Number(resultsAsc[0].product.price)).toBeLessThanOrEqual(Number(resultsAsc[1].product.price));
     }
   });
 

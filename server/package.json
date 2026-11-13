@@ -11,7 +11,11 @@
     "test:coverage": "vitest run --coverage",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
+    "db:seed": "prisma db seed",
     "typecheck": "tsc --noEmit"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "keywords": [],
   "author": "",

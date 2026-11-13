@@ -13,7 +13,7 @@ describe("Phase 3 — Product Catalog & Grounded Search", () => {
     const keyboard = products.find((p) => p.sku === "PROD-KB-001");
     expect(keyboard).toBeDefined();
     expect(keyboard?.name).toContain("Logitech MX Mechanical");
-    expect(keyboard?.price).toBe(79.99);
+    expect(Number(keyboard?.price)).toBe(79.99);
     expect(keyboard?.currency).toBe("USD");
     expect(keyboard?.isAvailable).toBe(true);
   });
@@ -30,7 +30,7 @@ describe("Phase 3 — Product Catalog & Grounded Search", () => {
     const under80 = await catalogService.searchProducts({ maxPrice: 80.0, category: "keyboards" });
     expect(under80.length).toBeGreaterThan(0);
     for (const item of under80) {
-      expect(item.price).toBeLessThanOrEqual(80.0);
+      expect(Number(item.price)).toBeLessThanOrEqual(80.0);
     }
   });
 

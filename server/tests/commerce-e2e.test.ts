@@ -36,8 +36,8 @@ describe("Phase 3 — End-to-End AI Commerce Flow", () => {
 
     const proposalId = chatBody1.data.proposal.id;
     const proposalNumber = chatBody1.data.proposal.proposalNumber;
-    expect(chatBody1.data.proposal.totalAmount).toBeLessThanOrEqual(80.0);
-    expect(chatBody1.data.proposal.totalAmount).toBeGreaterThan(0);
+    expect(Number(chatBody1.data.proposal.totalAmount)).toBeLessThanOrEqual(80.0);
+    expect(Number(chatBody1.data.proposal.totalAmount)).toBeGreaterThan(0);
 
     // -------------------------------------------------------------
     // Step 2: Query Proposal Details via API

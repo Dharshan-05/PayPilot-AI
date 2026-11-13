@@ -22,8 +22,8 @@ describe("Phase 3 — Commerce Proposal Lifecycle", () => {
     expect(proposal.proposalNumber).toMatch(/^PROP-/);
     expect(proposal.status).toBe("PENDING_CONFIRMATION");
     expect(proposal.quantity).toBe(2);
-    expect(proposal.unitAmount).toBe(79.99);
-    expect(proposal.totalAmount).toBe(159.98);
+    expect(Number(proposal.unitAmount)).toBe(79.99);
+    expect(Number(proposal.totalAmount)).toBe(159.98);
     expect(proposal.expiresAt.getTime()).toBeGreaterThan(Date.now());
   });
 

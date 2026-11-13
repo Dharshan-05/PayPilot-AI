@@ -29,7 +29,7 @@ describe("Phase 7 — End-to-End Agentic Commerce Workflow", () => {
     expect(res.evidence).toBeDefined();
     expect(res.evidence!.length).toBeGreaterThan(0);
     expect(res.products.every((p) => p.category === "keyboards")).toBe(true);
-    expect(res.products.every((p) => p.price <= 100)).toBe(true);
+    expect(res.products.every((p) => Number(p.price) <= 100)).toBe(true);
     expect(res.message).toContain("Logitech MX Mechanical Wireless Keyboard");
   });
 

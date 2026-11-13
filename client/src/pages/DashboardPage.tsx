@@ -37,6 +37,7 @@ import {
 import { productService } from '../services/productService';
 import { orderService } from '../services/orderService';
 import { agentService } from '../services/agentService';
+import { dashboardService } from '../services/dashboardService';
 import { ApiClientError, type BackendProposal } from '../services/types';
 import { AppLayout } from '../components/AppLayout';
 import { ActionModal, type ActiveModalType } from '../components/ActionModal';
@@ -175,9 +176,11 @@ export default function DashboardPage() {
 
     async function hydrateBackendState() {
       try {
-        const [catalogRes, ordersRes] = await Promise.allSettled([
+        const [catalogRes, ordersRes, dashboardRes, notifsRes] = await Promise.allSettled([
           productService.listProducts({ limit: 20 }, { signal: controller.signal }),
           orderService.listOrders(25, { signal: controller.signal }),
+          dashboardService.getStats({ signal: controller.signal }),
+          dashboardService.getNotifications({ signal: controller.signal }),
         ]);
 
         if (controller.signal.aborted) return;
@@ -194,6 +197,28 @@ export default function DashboardPage() {
           setSelectedTxId((prev) =>
             prev === 'tx-1' ? ordersRes.value[0].id : prev
           );
+        }
+
+        if (dashboardRes.status === 'fulfilled' && dashboardRes.value) {
+          const stats = dashboardRes.value;
+          if (stats.metrics.totalRevenue > 0) {
+            setBalanceNumber(Number(stats.metrics.totalRevenue.toFixed(2)));
+          }
+        }
+
+        if (notifsRes.status === 'fulfilled' && notifsRes.value && Array.isArray(notifsRes.value.notifications)) {
+          const fetchedNotifs = notifsRes.value.notifications.map((n: any) => ({
+            id: n.id,
+            title: n.title,
+            body: n.message,
+            time: new Date(n.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            category: (['PAYMENT', 'SECURITY', 'REWARD', 'AGENT'].includes(n.type) ? n.type.charAt(0) + n.type.slice(1).toLowerCase() + 's' : 'Payments') as any,
+            unread: !n.read,
+            targetRoute: '/notifications' as const,
+          }));
+          if (fetchedNotifs.length > 0) {
+            setNotifications(fetchedNotifs);
+          }
         }
 
         await agentService.getHealth({ signal: controller.signal }).catch(() => null);

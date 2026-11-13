@@ -3,6 +3,7 @@ import { catalogService } from "../src/server/commerce/catalog";
 import { searchManager } from "../src/server/commerce/search/manager";
 import { mockSearchProvider } from "../src/server/commerce/search/mock-provider";
 import { prisma } from "../src/server/db/client";
+import { Prisma } from "@prisma/client";
 
 describe("Phase 5 — Constraints & Authoritative Database Revalidation (Staleness Protection)", () => {
   beforeAll(async () => {
@@ -24,7 +25,7 @@ describe("Phase 5 — Constraints & Authoritative Database Revalidation (Stalene
     expect(res.rankedResults.length).toBeGreaterThan(0);
     for (const r of res.rankedResults) {
       expect(r.product.category).toBe("keyboards");
-      expect(r.product.price).toBeLessThanOrEqual(75.0);
+      expect(Number(r.product.price)).toBeLessThanOrEqual(75.0);
       expect(r.product.inventory).toBeGreaterThan(0);
     }
   });
@@ -38,11 +39,13 @@ describe("Phase 5 — Constraints & Authoritative Database Revalidation (Stalene
       name: "Stale Ghost Product",
       description: "This item exists only in the search index, not in SQLite Prisma DB",
       category: "keyboards",
-      price: 19.99,
+      price: new Prisma.Decimal(19.99),
       currency: "USD",
       inventory: 100,
       isAvailable: true,
       metadata: "{}",
+      status: "ACTIVE",
+      externalId: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -71,7 +74,7 @@ describe("Phase 5 — Constraints & Authoritative Database Revalidation (Stalene
     // 2. Manually mutate the document in the search index with a fake stale price ($1.00)
     await mockSearchProvider.indexProduct({
       ...realProduct!,
-      price: 1.0, // Stale/tampered price
+      price: new Prisma.Decimal(1.0), // Stale/tampered price
     });
 
     // 3. Search for this product through SearchManager
@@ -85,8 +88,8 @@ describe("Phase 5 — Constraints & Authoritative Database Revalidation (Stalene
     expect(matchedProduct).toBeDefined();
 
     // 4. Critical Invariant: The returned product price MUST be the authoritative database price ($79.99), NOT $1.00!
-    expect(matchedProduct!.product.price).toBe(authoritativePrice);
-    expect(matchedProduct!.product.price).not.toBe(1.0);
+    expect(Number(matchedProduct!.product.price)).toBe(Number(authoritativePrice));
+    expect(Number(matchedProduct!.product.price)).not.toBe(1.0);
 
     // Restore index
     await searchManager.reindexAll();

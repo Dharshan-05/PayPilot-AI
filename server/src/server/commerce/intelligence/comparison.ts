@@ -51,11 +51,11 @@ export class ProductComparisonEngine {
     }
 
     // 1. Identify Lowest Price
-    const sortedByPrice = [...enrichedList].sort((a, b) => a.price - b.price);
+    const sortedByPrice = [...enrichedList].sort((a, b) => Number(a.price) - Number(b.price));
     const cheapest = sortedByPrice[0];
     const mostExpensive = sortedByPrice[sortedByPrice.length - 1];
-    if (cheapest.price < mostExpensive.price) {
-      const diff = (mostExpensive.price - cheapest.price).toFixed(2);
+    if (Number(cheapest.price) < Number(mostExpensive.price)) {
+      const diff = (Number(mostExpensive.price) - Number(cheapest.price)).toFixed(2);
       advantages[cheapest.id].push(`Best price ($${diff} cheaper than ${mostExpensive.name})`);
     }
 
@@ -142,8 +142,8 @@ export class ProductComparisonEngine {
     const tradeoffs: string[] = [];
     if (cheapest.id !== mostExpensive.id) {
       tradeoffs.push(
-        `${cheapest.name} is the value option at $${cheapest.price.toFixed(2)}, saving $${(
-          mostExpensive.price - cheapest.price
+        `${cheapest.name} is the value option at $${Number(cheapest.price).toFixed(2)}, saving $${(
+          Number(mostExpensive.price) - Number(cheapest.price)
         ).toFixed(2)} compared to ${mostExpensive.name}.`
       );
     }

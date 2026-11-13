@@ -34,8 +34,8 @@ describe("Phase 8 — PayPal-Inspired Product UI & AG Grid Contract Verification
         expect(p.name).toBeDefined();
         expect(typeof p.name).toBe("string");
         expect(p.category).toBeDefined();
-        expect(typeof p.price).toBe("number");
-        expect(p.price).toBeGreaterThan(0);
+        expect(typeof p.price === "number" || typeof p.price === "object").toBe(true);
+        expect(Number(p.price)).toBeGreaterThan(0);
         expect(p.currency).toBe("USD");
         expect(typeof p.inventory).toBe("number");
         expect(typeof p.isAvailable).toBe("boolean");
@@ -78,7 +78,7 @@ describe("Phase 8 — PayPal-Inspired Product UI & AG Grid Contract Verification
         const formatted = new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: row.product.currency,
-        }).format(row.product.price);
+        }).format(Number(row.product.price));
 
         expect(formatted).toMatch(/^\$\d+\.\d{2}$/);
       }
@@ -97,7 +97,7 @@ describe("Phase 8 — PayPal-Inspired Product UI & AG Grid Contract Verification
 
       expect(res.results.length).toBeGreaterThan(1);
       for (let i = 1; i < res.results.length; i++) {
-        expect(res.results[i].product.price).toBeGreaterThanOrEqual(res.results[i - 1].product.price);
+        expect(Number(res.results[i].product.price)).toBeGreaterThanOrEqual(Number(res.results[i - 1].product.price));
       }
     });
 
@@ -109,7 +109,7 @@ describe("Phase 8 — PayPal-Inspired Product UI & AG Grid Contract Verification
 
       expect(res.results.length).toBeGreaterThan(1);
       for (let i = 1; i < res.results.length; i++) {
-        expect(res.results[i].product.price).toBeLessThanOrEqual(res.results[i - 1].product.price);
+        expect(Number(res.results[i].product.price)).toBeLessThanOrEqual(Number(res.results[i - 1].product.price));
       }
     });
 
@@ -221,7 +221,7 @@ describe("Phase 8 — PayPal-Inspired Product UI & AG Grid Contract Verification
       expect(product!.id).toBe(allProds[0].id);
       expect(product!.sku).toBeDefined();
       expect(product!.name).toBeDefined();
-      expect(product!.price).toBeGreaterThan(0);
+      expect(Number(product!.price)).toBeGreaterThan(0);
 
       // Verify metadata is valid JSON and extractable
       if (product!.metadata) {
@@ -252,8 +252,8 @@ describe("Phase 8 — PayPal-Inspired Product UI & AG Grid Contract Verification
       expect(proposal.id).toBeDefined();
       expect(proposal.proposalNumber).toMatch(/^PROP-/);
       expect(proposal.status).toBe("PENDING_CONFIRMATION");
-      expect(proposal.unitAmount).toBe(targetProd.price);
-      expect(proposal.totalAmount).toBe(targetProd.price);
+      expect(Number(proposal.unitAmount)).toBe(Number(targetProd.price));
+      expect(Number(proposal.totalAmount)).toBe(Number(targetProd.price));
       expect(proposal.currency).toBe(targetProd.currency);
 
       // Verify 15-minute expiration
@@ -272,8 +272,8 @@ describe("Phase 8 — PayPal-Inspired Product UI & AG Grid Contract Verification
         quantity: 2,
       });
 
-      expect(proposal.unitAmount).toBe(targetProd.price);
-      expect(proposal.totalAmount).toBe(targetProd.price * 2);
+      expect(Number(proposal.unitAmount)).toBe(Number(targetProd.price));
+      expect(Number(proposal.totalAmount)).toBe(Number(targetProd.price) * 2);
       expect(proposal.totalAmount).not.toBe(0.01);
     });
 

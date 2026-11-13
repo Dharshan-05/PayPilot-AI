@@ -24,7 +24,7 @@ describe("Phase 5 — Semantic Search: Document Normalization & Deterministic Em
     expect(doc.name).toBe(product!.name);
     expect(doc.category).toBe("keyboards");
     expect(doc.brand).toBeDefined();
-    expect(doc.price).toBe(product!.price);
+    expect(doc.price).toBe(Number(product!.price));
     expect(doc.currency).toBe(product!.currency);
     expect(doc.inventory).toBe(product!.inventory);
     expect(doc.features).toContain("wireless");

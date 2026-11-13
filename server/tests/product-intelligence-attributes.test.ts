@@ -4,16 +4,18 @@ import {
   ProductValidationError,
   LOW_STOCK_THRESHOLD,
 } from "../src/server/commerce/intelligence/attributes";
-import { Product } from "@prisma/client";
+import { Product, Prisma } from "@prisma/client";
 
 describe("Phase 4 — Product Attributes, Enrichment & Data Quality", () => {
   const sampleProduct: Product = {
     id: "test-prod-1",
     sku: "SKU-KB-001",
+    externalId: null,
+    status: "ACTIVE",
     name: "Keychron K2 Mechanical Keyboard",
     description: "Wireless mechanical keyboard with tactile quiet switches and bluetooth connectivity.",
     category: "keyboards",
-    price: 69.99,
+    price: new Prisma.Decimal(69.99),
     currency: "USD",
     inventory: 25,
     isAvailable: true,

@@ -35,7 +35,7 @@ export class PayPalHttpClient {
 
   constructor(config: PayPalConfig) {
     this.config = config;
-    const requestedProvider = config.provider || "auto";
+    const requestedProvider = (config.provider || process.env.PAYPAL_PROVIDER || "auto").toLowerCase();
     const hasCredentials = hasValidPayPalCredentials(config.clientId, config.clientSecret);
 
     if (process.env.PAYPAL_MOCK_CLIENT === "true" || requestedProvider === "mock") {

@@ -4,7 +4,7 @@ import {
   RankingCriteria,
 } from "../src/server/commerce/intelligence/ranking";
 import { ProductEnricher, EnrichedProduct } from "../src/server/commerce/intelligence/attributes";
-import { Product } from "@prisma/client";
+import { Product, Prisma } from "@prisma/client";
 
 describe("Phase 4 — Multi-Factor Ranking Engine & Evidence Grounding", () => {
   const engine = new MultiFactorRankingEngine();
@@ -13,10 +13,12 @@ describe("Phase 4 — Multi-Factor Ranking Engine & Evidence Grounding", () => {
     ProductEnricher.enrich({
       id: "prod-kb-1",
       sku: "SKU-KB-1",
+      externalId: null,
+      status: "ACTIVE",
       name: "Logitech MX Mechanical Keyboard",
       description: "Wireless mechanical keyboard with quiet tactile switches for coding.",
       category: "keyboards",
-      price: 79.99,
+      price: new Prisma.Decimal(79.99),
       currency: "USD",
       inventory: 30,
       isAvailable: true,
@@ -27,10 +29,12 @@ describe("Phase 4 — Multi-Factor Ranking Engine & Evidence Grounding", () => {
     ProductEnricher.enrich({
       id: "prod-kb-2",
       sku: "SKU-KB-2",
+      externalId: null,
+      status: "ACTIVE",
       name: "Keychron K2 Keyboard",
       description: "Compact wireless mechanical keyboard.",
       category: "keyboards",
-      price: 69.99,
+      price: new Prisma.Decimal(69.99),
       currency: "USD",
       inventory: 20,
       isAvailable: true,
@@ -41,10 +45,12 @@ describe("Phase 4 — Multi-Factor Ranking Engine & Evidence Grounding", () => {
     ProductEnricher.enrich({
       id: "prod-kb-3",
       sku: "SKU-KB-3",
+      externalId: null,
+      status: "ACTIVE",
       name: "Custom Boutique Ergonomic Keyboard",
       description: "High-end split ergonomic mechanical keyboard.",
       category: "keyboards",
-      price: 199.99,
+      price: new Prisma.Decimal(199.99),
       currency: "USD",
       inventory: 5,
       isAvailable: true,

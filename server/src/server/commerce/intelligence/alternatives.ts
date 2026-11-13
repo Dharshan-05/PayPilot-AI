@@ -26,11 +26,12 @@ export class ProductAlternativesEngine {
     }
 
     const targetProduct = ProductEnricher.enrich(rawTarget);
+    const targetPrice = Number(targetProduct.price);
     const reasonText =
       options.reason === "OUT_OF_STOCK" || targetProduct.stockStatus === "OUT_OF_STOCK"
         ? `Target product '${targetProduct.name}' is currently out of stock. Surfacing active substitutes.`
-        : options.reason === "OVER_BUDGET" || (options.maxBudget && targetProduct.price > options.maxBudget)
-        ? `Target product price of $${targetProduct.price.toFixed(2)} exceeds budget ($${options.maxBudget?.toFixed(
+        : options.reason === "OVER_BUDGET" || (options.maxBudget && targetPrice > options.maxBudget)
+        ? `Target product price of $${targetPrice.toFixed(2)} exceeds budget ($${options.maxBudget?.toFixed(
             2
           )}). Finding budget-friendly alternatives.`
         : `Finding top alternatives for '${targetProduct.name}'.`;
@@ -38,7 +39,7 @@ export class ProductAlternativesEngine {
     // Query active in-stock products in the same category excluding target
     const categoryProducts = await catalogService.searchProducts({
       category: targetProduct.category,
-      maxPrice: options.maxBudget || targetProduct.price * 1.25,
+      maxPrice: options.maxBudget || targetPrice * 1.25,
       inStockOnly: true,
       limit: 10,
     });
@@ -50,7 +51,7 @@ export class ProductAlternativesEngine {
     // Rank candidates using target product's key features and target budget
     const rankedAlternatives = this.rankingEngine.rank(candidateList, {
       category: targetProduct.category,
-      maxBudget: options.maxBudget || targetProduct.price,
+      maxBudget: options.maxBudget || targetPrice,
       requiredFeatures: targetProduct.attributes.features.slice(0, 2),
       useCase: targetProduct.attributes.useCases[0],
       inStockOnly: true,

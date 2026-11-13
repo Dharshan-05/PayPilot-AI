@@ -1,5 +1,5 @@
 import { prisma } from "../db/client";
-import { Product, CommerceProposal } from "@prisma/client";
+import { Product, CommerceProposal, Prisma } from "@prisma/client";
 import { catalogService } from "./catalog";
 import { payPalService } from "../paypal/service";
 import { Logger } from "../observability/logger";
@@ -77,8 +77,10 @@ export class ProposalService {
       );
     }
 
-    const unitAmount = product.price;
-    const totalAmount = Math.round(unitAmount * quantity * 100) / 100;
+    const numPrice = Number(product.price);
+    const numTotal = Math.round(numPrice * quantity * 100) / 100;
+    const unitAmount = new Prisma.Decimal(numPrice);
+    const totalAmount = new Prisma.Decimal(numTotal);
     const proposalNumber = `PROP-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
     const expiresAt = new Date(Date.now() + PROPOSAL_TTL_MS);
 
@@ -86,7 +88,7 @@ export class ProposalService {
       proposalNumber,
       productId: product.id,
       productName: product.name,
-      totalAmount,
+      totalAmount: numTotal,
     });
 
     return prisma.commerceProposal.create({
@@ -187,12 +189,12 @@ export class ProposalService {
       throw new Error(`Referenced product '${proposal.productId}' no longer exists.`);
     }
 
-    if (product.price !== proposal.unitAmount) {
+    if (Number(product.price) !== Number(proposal.unitAmount)) {
       log.warn("Proposal confirmation rejected: Price Mismatch Detected", {
-        proposalPrice: proposal.unitAmount,
-        currentDatabasePrice: product.price,
+        proposalPrice: Number(proposal.unitAmount),
+        currentDatabasePrice: Number(product.price),
       });
-      throw new PriceMismatchError(proposal.unitAmount, product.price);
+      throw new PriceMismatchError(Number(proposal.unitAmount), Number(product.price));
     }
 
     // 5. Inventory Availability Re-check
@@ -214,11 +216,11 @@ export class ProposalService {
     log.info("Executing PayPal order creation for confirmed proposal", {
       proposalNumber: proposal.proposalNumber,
       internalReference,
-      totalAmount: proposal.totalAmount,
+      totalAmount: Number(proposal.totalAmount),
     });
 
     const payPalOrder = await payPalService.createOrder({
-      amount: proposal.totalAmount,
+      amount: Number(proposal.totalAmount),
       currency: proposal.currency,
       description,
       internalReference,

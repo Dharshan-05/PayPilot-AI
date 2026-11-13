@@ -81,8 +81,8 @@ describe("Phase 7 — End-to-End Security Audit & Invariant Enforcement", () => 
     });
 
     // Proposal amount must strictly match authoritative database price, not any input
-    expect(proposal.unitAmount).toBe(freshProduct!.price);
-    expect(proposal.totalAmount).toBe(freshProduct!.price);
+    expect(Number(proposal.unitAmount)).toBe(Number(freshProduct!.price));
+    expect(Number(proposal.totalAmount)).toBe(Number(freshProduct!.price));
   });
 
   it("Action Policy Tier Enforcement: CONFIRM_PAYMENT is locked to FINANCIAL_USER_AUTH", () => {

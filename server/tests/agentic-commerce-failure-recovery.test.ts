@@ -28,7 +28,7 @@ describe("Phase 7 — Failure Scenarios & Self-Healing Resilience", () => {
 
     try {
       // Simulate price change in authoritative database
-      await catalogService.updateProductPrice(testProductId, originalPrice + 20);
+      await catalogService.updateProductPrice(testProductId, Number(originalPrice) + 20);
 
       // User attempts confirmation with stale proposal
       await expect(
@@ -36,7 +36,7 @@ describe("Phase 7 — Failure Scenarios & Self-Healing Resilience", () => {
       ).rejects.toThrow(PriceMismatchError);
     } finally {
       // Restore price
-      await catalogService.updateProductPrice(testProductId, originalPrice);
+      await catalogService.updateProductPrice(testProductId, Number(originalPrice));
     }
   });
 

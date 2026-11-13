@@ -156,9 +156,9 @@ export class IntelligentSearchEngine {
     // Apply Sort Override if specified
     const sort = options.sort || "relevance";
     if (sort === "price_asc") {
-      ranked.sort((a, b) => a.product.price - b.product.price);
+      ranked.sort((a, b) => Number(a.product.price) - Number(b.product.price));
     } else if (sort === "price_desc") {
-      ranked.sort((a, b) => b.product.price - a.product.price);
+      ranked.sort((a, b) => Number(b.product.price) - Number(a.product.price));
     } else if (sort === "availability") {
       ranked.sort((a, b) => b.product.inventory - a.product.inventory);
     }

@@ -20,7 +20,7 @@ describe("Phase 5 — Commerce Agent Semantic Search Integration & Payment Bound
     expect(res.status).toBe("SUCCESS");
     expect(res.products.length).toBeGreaterThan(0);
     expect(res.products[0].category).toBe("keyboards");
-    expect(res.products[0].price).toBeLessThanOrEqual(90);
+    expect(Number(res.products[0].price)).toBeLessThanOrEqual(90);
     expect(res.evidence).toBeDefined();
     expect(res.evidence?.[0].badge).toBeDefined();
   });
@@ -36,7 +36,7 @@ describe("Phase 5 — Commerce Agent Semantic Search Integration & Payment Bound
     expect(res.actionRequired).toBe("CONFIRMATION_REQUIRED");
     expect(res.proposal).toBeDefined();
     expect(res.proposal?.status).toBe("PENDING_CONFIRMATION");
-    expect(res.proposal?.totalAmount).toBeLessThanOrEqual(85);
+    expect(Number(res.proposal?.totalAmount)).toBeLessThanOrEqual(85);
 
     // CRITICAL SECURITY INVARIANT: Search and AI CANNOT confirm or execute payments
     const authCheck = AgentActionPolicy.authorizeAction("CONFIRM_PAYMENT", "ai_agent");

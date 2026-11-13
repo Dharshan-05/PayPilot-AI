@@ -20,7 +20,7 @@ describe("Phase 3 — Price Integrity, Inventory Protection & Concurrency", () =
       productId: testProductId,
       quantity: 1,
     });
-    expect(proposal.unitAmount).toBe(69.99);
+    expect(Number(proposal.unitAmount)).toBe(69.99);
 
     // Simulate price increase in database before user confirms
     await catalogService.updateProductPrice(testProductId, 89.99);

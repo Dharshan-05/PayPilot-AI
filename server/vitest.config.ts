@@ -9,6 +9,10 @@ export default defineConfig({
     environment: "node",
     globals: true,
     testTimeout: 15000,
+    fileParallelism: false,
+    env: {
+      PAYPAL_PROVIDER: "mock",
+    },
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],

@@ -92,7 +92,7 @@ describe("Phase 3 — AI Commerce Security Boundary & Policy Defense", () => {
       // Verify every product actually exists in database
       const dbProduct = await catalogService.getProductById(p.id);
       expect(dbProduct).not.toBeNull();
-      expect(dbProduct?.price).toBe(p.price);
+      expect(Number(dbProduct?.price)).toBe(Number(p.price));
     }
   });
 });

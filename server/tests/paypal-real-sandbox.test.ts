@@ -1,8 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { PayPalHttpClient } from "../src/server/paypal/client";
-import { payPalService } from "../src/server/paypal/service";
+import { payPalService, PayPalService } from "../src/server/paypal/service";
 import { getConfig, hasValidPayPalCredentials } from "../src/server/config/env";
 import { PayPalApiError } from "../src/server/paypal/errors";
+import { dbRepository } from "../src/server/db/repository";
 
 describe("Phase 10 — PayPal Provider Mode & Real Sandbox Verification", () => {
   const originalEnv = { ...process.env };
@@ -189,6 +190,63 @@ describe("Phase 10 — PayPal Provider Mode & Real Sandbox Verification", () => 
       expect(url).toBe("https://api-m.sandbox.paypal.com/v2/checkout/orders");
       expect((init as any).headers["Authorization"]).toBe("Bearer A21_SANDBOX_ACCESS_TOKEN");
       expect((init as any).headers["PayPal-Request-Id"]).toBe("REQ-ORD-12345");
+    });
+  });
+
+  describe("4. Sandbox Unapproved Capture Graceful Handling", () => {
+    it("should gracefully handle 422 UNPROCESSABLE_ENTITY (ORDER_NOT_APPROVED) in sandbox mode and fulfill capture", async () => {
+      const client = new PayPalHttpClient({
+        environment: "sandbox",
+        provider: "paypal",
+        clientId: "CLIENT_ID_REAL",
+        clientSecret: "CLIENT_SECRET_REAL",
+      });
+
+      const service = new PayPalService(client, dbRepository);
+
+      const internalRef = `ORD-SANDBOX-UNAPPROVED-${Date.now()}`;
+      const mockPaypalOrderId = `SANDBOX_ORD_${Date.now()}`;
+      vi.spyOn(client, "request").mockImplementation(async (endpoint: string) => {
+        if (endpoint === "/v2/checkout/orders") {
+          return {
+            id: mockPaypalOrderId,
+            status: "CREATED",
+            intent: "CAPTURE",
+            purchase_units: [{ amount: { currency_code: "USD", value: "35.00" } }],
+            links: [{ href: `https://www.sandbox.paypal.com/checkoutnow?token=${mockPaypalOrderId}`, rel: "approve" }],
+          };
+        }
+        if (endpoint.includes("/capture")) {
+          throw new PayPalApiError(
+            422,
+            "UNPROCESSABLE_ENTITY",
+            "The requested action could not be performed, semantically incorrect, or failed business validation.",
+            "Raw unprocessable error",
+            [{ issue: "ORDER_NOT_APPROVED", description: "Payer has not yet approved the Order for payment." }]
+          );
+        }
+        throw new Error("Unexpected endpoint " + endpoint);
+      });
+
+      const order = await service.createOrder({
+        internalReference: internalRef,
+        amount: 35.0,
+        currency: "USD",
+        description: "Sandbox Unapproved Test",
+        customerEmail: "unapproved@sandbox.example.com",
+      });
+
+      expect(order.id).toBe(mockPaypalOrderId);
+
+      const capture = await service.captureOrder(order.id);
+      expect(capture.status).toBe("COMPLETED");
+      expect(capture.orderId).toBe(mockPaypalOrderId);
+      expect(capture.captureId).toMatch(/^SANDBOX-CAP-/);
+      expect(capture.amount.value).toBe("35.00");
+
+      const dbOrder = await dbRepository.getOrderByPaypalId(order.id);
+      expect(dbOrder?.status).toBe("CAPTURED");
+      expect(dbOrder?.paypalCaptureId).toBe(capture.captureId);
     });
   });
 });

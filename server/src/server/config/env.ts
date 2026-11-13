@@ -97,7 +97,17 @@ export function getConfig(overrideEnv?: Record<string, string | undefined>): App
     return cachedConfig;
   }
 
-  const rawEnv = overrideEnv || process.env;
+  const rawEnv: Record<string, any> = { ...(overrideEnv || process.env) };
+
+  // If running on Vercel without explicit APP_BASE_URL, infer public domain from Vercel system env vars
+  if (!overrideEnv && (!rawEnv.APP_BASE_URL || rawEnv.APP_BASE_URL === "http://localhost:3000")) {
+    if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+      rawEnv.APP_BASE_URL = `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+    } else if (process.env.VERCEL_URL) {
+      rawEnv.APP_BASE_URL = `https://${process.env.VERCEL_URL}`;
+    }
+  }
+
   const result = configSchema.safeParse(rawEnv);
 
   if (!result.success) {

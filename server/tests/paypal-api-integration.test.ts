@@ -141,7 +141,7 @@ describe("PayPal API Integration & Security Specification (15 Verifications)", (
       where: { internalReference: ref },
     });
     expect(dbOrder).toBeTruthy();
-    expect(dbOrder?.amount).toBe(45.0);
+    expect(Number(dbOrder?.amount)).toBe(45.0);
     expect(dbOrder?.status).toBe("CREATED");
   });
 

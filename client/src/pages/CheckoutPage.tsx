@@ -272,7 +272,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
               </h3>
               <p className="text-[11.5px] text-[#6a665f] max-w-[440px] mx-auto">
                 PayPal Order <strong>{completedDetails?.paypalOrderId}</strong> (Capture ID{' '}
-                <strong>{completedDetails?.captureId}</strong>) for {activeProd.name} has been captured and persisted to the SQLite ledger.
+                <strong>{completedDetails?.captureId}</strong>) for {activeProd.name} has been captured and persisted to the PostgreSQL ledger.
               </p>
             </div>
           )}

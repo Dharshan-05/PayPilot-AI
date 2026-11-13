@@ -98,13 +98,13 @@ export class ContextResolver {
     }
     // Comparatives: "the cheaper one", "cheapest", "lower price"
     else if (/\b(cheap(er|est)?|lower price|budget option|least expensive)\b/i.test(rawLower) && recentProducts.length >= 2) {
-      const sortedByPrice = [...recentProducts].sort((a, b) => a.price - b.price);
+      const sortedByPrice = [...recentProducts].sort((a, b) => Number(a.price) - Number(b.price));
       result.resolvedProduct = sortedByPrice[0];
       log.info("Resolved contextual reference: cheapest product", { productId: result.resolvedProduct.id, price: result.resolvedProduct.price });
     }
     // Comparatives: "the premium one", "more expensive", "top tier"
     else if (/\b(premium|expensive|more expensive|high end|top tier)\b/i.test(rawLower) && recentProducts.length >= 2) {
-      const sortedByPrice = [...recentProducts].sort((a, b) => b.price - a.price);
+      const sortedByPrice = [...recentProducts].sort((a, b) => Number(b.price) - Number(a.price));
       result.resolvedProduct = sortedByPrice[0];
       log.info("Resolved contextual reference: premium product", { productId: result.resolvedProduct.id, price: result.resolvedProduct.price });
     }

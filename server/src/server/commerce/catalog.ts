@@ -1,5 +1,5 @@
 import { prisma } from "../db/client";
-import { Product } from "@prisma/client";
+import { Product, Prisma } from "@prisma/client";
 import { Logger } from "../observability/logger";
 
 const log = new Logger("CatalogService");
@@ -15,7 +15,11 @@ export interface ProductSearchParams {
   offset?: number;
 }
 
-export const INITIAL_PRODUCTS: Omit<Product, "id" | "createdAt" | "updatedAt">[] = [
+export const INITIAL_PRODUCTS: (Omit<Product, "id" | "createdAt" | "updatedAt" | "price" | "externalId" | "status"> & {
+  price: number | Prisma.Decimal;
+  externalId?: string | null;
+  status?: string;
+})[] = [
   {
     sku: "PROD-KB-001",
     name: "Logitech MX Mechanical Wireless Keyboard",
@@ -112,17 +116,38 @@ export class CatalogService {
    */
   async ensureCatalogSeeded(): Promise<void> {
     try {
-      const count = await prisma.product.count();
-      if (count === 0) {
-        log.info("Product catalog empty. Seeding initial products...");
-        for (const prod of INITIAL_PRODUCTS) {
-          await prisma.product.upsert({
-            where: { sku: prod.sku },
-            update: {},
-            create: prod,
-          });
-        }
-        log.info("Product catalog successfully seeded", { seededCount: INITIAL_PRODUCTS.length });
+      await prisma.commerceProposal.deleteMany({
+        where: { product: { sku: { startsWith: "RACE-ITEM-" } } },
+      }).catch(() => {});
+      await prisma.product.deleteMany({
+        where: { sku: { startsWith: "RACE-ITEM-" } },
+      }).catch(() => {});
+
+      for (const prod of INITIAL_PRODUCTS) {
+        await prisma.product.upsert({
+          where: { sku: prod.sku },
+          update: {
+            name: prod.name,
+            description: prod.description,
+            category: prod.category,
+            price: new Prisma.Decimal(prod.price as any),
+            currency: prod.currency,
+            inventory: prod.inventory,
+            isAvailable: prod.isAvailable,
+            metadata: prod.metadata,
+          },
+          create: {
+            sku: prod.sku,
+            name: prod.name,
+            description: prod.description,
+            category: prod.category,
+            price: new Prisma.Decimal(prod.price as any),
+            currency: prod.currency,
+            inventory: prod.inventory,
+            isAvailable: prod.isAvailable,
+            metadata: prod.metadata,
+          },
+        });
       }
     } catch (err: any) {
       log.error("Failed to seed product catalog", err);

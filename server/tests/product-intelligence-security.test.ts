@@ -135,7 +135,7 @@ describe("Phase 4 — Product Intelligence Security, Integrity & Performance", (
     const firstProduct = products[0];
 
     const alts = await productAlternativesEngine.findAlternatives(firstProduct.id, {
-      maxBudget: firstProduct.price * 1.5,
+      maxBudget: Number(firstProduct.price) * 1.5,
     });
 
     expect(Array.isArray(alts.alternatives)).toBe(true);

@@ -1,7 +1,8 @@
-// Prisma schema for PayPal AI Hackathon - Phase 1 Foundation
+// Prisma schema for PayPilot AI — PostgreSQL Persistent Application Database
+// Production-compatible with PostgreSQL on Vercel, Supabase, Neon, AWS RDS, or local PostgreSQL
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -9,28 +10,369 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// 1. User / Customer Entity
+// ==============================================================================
+// 1. User & Identity Management
+// ==============================================================================
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   name      String?
+  role      String   @default("MERCHANT") // ADMIN, MERCHANT, ANALYST, OPERATOR
+  status    String   @default("ACTIVE")   // ACTIVE, INACTIVE, SUSPENDED
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   orders    PaymentOrder[]
+  auditLogs AuditLog[]
   aiAudits  AIAuditLog[]
 
+  @@index([email])
+  @@index([status])
   @@map("users")
 }
 
-// 2. Payment / Order Entity
-// Keeps internal identifiers separated from PayPal external identifiers
+// ==============================================================================
+// 2. Customer Management
+// ==============================================================================
+model Customer {
+  id               String   @id @default(uuid())
+  externalId       String   @unique // e.g. CUST-2026-XXXX
+  name             String
+  email            String   @unique
+  phone            String?
+  country          String   @default("US")
+  status           String   @default("ACTIVE") // ACTIVE, INACTIVE, BLOCKED
+  totalSpent       Decimal  @default(0.00) @db.Decimal(12, 2)
+  transactionCount Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  orders       Order[]
+  payments     Payment[]
+  transactions Transaction[]
+
+  @@index([email])
+  @@index([status])
+  @@index([country])
+  @@index([createdAt])
+  @@map("customers")
+}
+
+// ==============================================================================
+// 3. Product Catalog
+// ==============================================================================
+model Product {
+  id          String   @id @default(uuid())
+  externalId  String?  @unique
+  sku         String   @unique
+  name        String
+  description String
+  category    String
+  price       Decimal  @db.Decimal(12, 2)
+  currency    String   @default("USD")
+  inventory   Int      @default(100)
+  status      String   @default("ACTIVE") // ACTIVE, DRAFT, ARCHIVED, OUT_OF_STOCK
+  isAvailable Boolean  @default(true)
+  metadata    String?  // Safe JSON metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  proposals   CommerceProposal[]
+
+  @@index([category])
+  @@index([status])
+  @@index([isAvailable])
+  @@index([sku])
+  @@map("products")
+}
+
+// ==============================================================================
+// 4. Order Management
+// ==============================================================================
+model Order {
+  id            String   @id @default(uuid())
+  orderNumber   String   @unique // e.g. ORD-20261113-XXXX
+  customerId    String
+  status        String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, CANCELLED, REFUNDED
+  amount        Decimal  @db.Decimal(12, 2)
+  currency      String   @default("USD")
+  paypalOrderId String?  @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  customer Customer  @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  payments Payment[]
+
+  @@index([customerId])
+  @@index([status])
+  @@index([paypalOrderId])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+// ==============================================================================
+// 5. Payment Records
+// ==============================================================================
+model Payment {
+  id              String    @id @default(uuid())
+  orderId         String
+  customerId      String
+  paypalOrderId   String?
+  paypalCaptureId String?   @unique
+  status          String    @default("INITIATED") // INITIATED, PENDING, COMPLETED, FAILED, REFUNDED
+  amount          Decimal   @db.Decimal(12, 2)
+  currency        String    @default("USD")
+  paymentMethod   String    @default("PayPal Balance")
+  payerEmail      String?
+  capturedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  order        Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customer     Customer      @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  transactions Transaction[]
+
+  @@index([orderId])
+  @@index([customerId])
+  @@index([paypalOrderId])
+  @@index([paypalCaptureId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+// ==============================================================================
+// 6. Transaction Ledger
+// ==============================================================================
+model Transaction {
+  id              String   @id @default(uuid())
+  paymentId       String?
+  customerId      String
+  paypalOrderId   String?
+  paypalCaptureId String?
+  type            String   @default("PAYMENT") // PAYMENT, REFUND, TRANSFER, DEPOSIT, WITHDRAWAL
+  status          String   @default("COMPLETED") // COMPLETED, PENDING, FAILED, REFUNDED
+  amount          Decimal  @db.Decimal(12, 2)
+  currency        String   @default("USD")
+  riskScore       Int      @default(0) // 0-100
+  riskLevel       String   @default("LOW") // LOW, MEDIUM, HIGH, CRITICAL
+  description     String?
+  metadata        String?  // Safe JSON metadata
+  transactionDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  payment        Payment?        @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  customer       Customer        @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  riskAssessment RiskAssessment?
+  aiInsights     AIInsight[]
+
+  @@index([paymentId])
+  @@index([customerId])
+  @@index([paypalOrderId])
+  @@index([paypalCaptureId])
+  @@index([status])
+  @@index([type])
+  @@index([riskLevel])
+  @@index([transactionDate])
+  @@index([createdAt])
+  @@map("transactions")
+}
+
+// ==============================================================================
+// 7. Risk Assessment Engine
+// ==============================================================================
+model RiskAssessment {
+  id            String   @id @default(uuid())
+  transactionId String   @unique
+  score         Int      // 0-100 (higher = riskier)
+  level         String   // LOW, MEDIUM, HIGH, CRITICAL
+  reasons       String   // JSON array of risk signals / factors
+  model         String   @default("FraudGuard-AI-v2")
+  confidence    Decimal  @default(0.9500) @db.Decimal(5, 4)
+  createdAt     DateTime @default(now())
+
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([level])
+  @@index([score])
+  @@index([createdAt])
+  @@map("risk_assessments")
+}
+
+// ==============================================================================
+// 8. AI Insights
+// ==============================================================================
+model AIInsight {
+  id             String   @id @default(uuid())
+  transactionId  String?
+  type           String   // ANOMALY, OPTIMIZATION, PATTERN, ALERT, CASHFLOW
+  title          String
+  summary        String
+  severity       String   @default("INFO") // INFO, LOW, MEDIUM, HIGH, CRITICAL
+  confidence     Decimal  @default(0.9000) @db.Decimal(5, 4)
+  recommendation String?
+  status         String   @default("ACTIVE") // ACTIVE, ACKNOWLEDGED, RESOLVED, DISMISSED
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  transaction Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+
+  @@index([transactionId])
+  @@index([type])
+  @@index([severity])
+  @@index([status])
+  @@index([createdAt])
+  @@map("ai_insights")
+}
+
+// ==============================================================================
+// 9. AI Recommendations
+// ==============================================================================
+model AIRecommendation {
+  id             String   @id @default(uuid())
+  type           String   // PRICING, SECURITY, CASHFLOW, RETENTION, COMPLIANCE
+  title          String
+  description    String
+  priority       String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  confidence     Decimal  @default(0.9000) @db.Decimal(5, 4)
+  expectedImpact String?
+  status         String   @default("PROPOSED") // PROPOSED, ACCEPTED, REJECTED, EXECUTED
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([type])
+  @@index([priority])
+  @@index([status])
+  @@index([createdAt])
+  @@map("ai_recommendations")
+}
+
+// ==============================================================================
+// 10. Autonomous Agents Registry
+// ==============================================================================
+model Agent {
+  id          String    @id @default(uuid())
+  name        String
+  type        String    // SHOPPING, SECURITY, INSIGHTS, COMPLIANCE, TREASURY
+  description String
+  status      String    @default("ACTIVE") // ACTIVE, PAUSED, IDLE, ERROR
+  lastRunAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  runs AgentRun[]
+
+  @@index([type])
+  @@index([status])
+  @@map("agents")
+}
+
+// ==============================================================================
+// 11. Autonomous Agent Execution Runs
+// ==============================================================================
+model AgentRun {
+  id          String    @id @default(uuid())
+  agentId     String
+  status      String    @default("COMPLETED") // RUNNING, COMPLETED, FAILED, TIMED_OUT
+  input       String?   // JSON input / task description
+  output      String?   // JSON summary of results
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  error       String?
+  createdAt   DateTime  @default(now())
+
+  agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([agentId])
+  @@index([status])
+  @@index([startedAt])
+  @@map("agent_runs")
+}
+
+// ==============================================================================
+// 12. User & System Notifications
+// ==============================================================================
+model Notification {
+  id        String   @id @default(uuid())
+  type      String   // PAYMENT, SECURITY, REWARD, AGENT, SYSTEM
+  title     String
+  message   String
+  severity  String   @default("INFO") // INFO, WARNING, SUCCESS, ERROR
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([type])
+  @@index([read])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// ==============================================================================
+// 13. System Audit Log
+// ==============================================================================
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  action    String   // e.g. "USER_LOGIN", "PAYMENT_CAPTURED", "PROPOSAL_CONFIRMED"
+  entity    String   // "Order", "Payment", "Customer", "Setting"
+  entityId  String?
+  details   String?  // JSON
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([entity])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ==============================================================================
+// 14. Business & Financial Metrics
+// ==============================================================================
+model BusinessMetric {
+  id            String   @id @default(uuid())
+  metric        String   // TOTAL_REVENUE, TRANSACTION_COUNT, AVG_TRANSACTION_VALUE, SUCCESS_RATE
+  value         Decimal  @db.Decimal(16, 4)
+  previousValue Decimal? @db.Decimal(16, 4)
+  changePercent Decimal? @db.Decimal(8, 4)
+  period        String   @default("ALL_TIME") // DAILY, WEEKLY, MONTHLY, QUARTERLY, ALL_TIME
+  recordedAt    DateTime @default(now())
+
+  @@index([metric])
+  @@index([period])
+  @@index([recordedAt])
+  @@map("business_metrics")
+}
+
+// ==============================================================================
+// 15. Application Settings
+// ==============================================================================
+model ApplicationSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
+  @@map("application_settings")
+}
+
+// ==============================================================================
+// Preserved Models (Backward Compatibility with Existing Flow & Tests)
+// ==============================================================================
+
+// Preserved: PaymentOrder keeps existing test suites and PayPal flow fully intact
 model PaymentOrder {
   id                String   @id @default(uuid())
   internalReference String   @unique // e.g. ORD-20261110-XXXX
-  paypalOrderId     String?  @unique // PayPal-assigned Order ID (e.g. 5O190127TN364715T)
-  paypalCaptureId   String?  @unique // PayPal-assigned Capture ID after execution
-  amount            Float
+  paypalOrderId     String?  @unique // PayPal-assigned Order ID
+  paypalCaptureId   String?  @unique // PayPal-assigned Capture ID
+  amount            Decimal  @db.Decimal(12, 2)
   currency          String   @default("USD")
   status            String   // CREATED, APPROVED, CAPTURED, FAILED, CANCELLED
   customerEmail     String?
@@ -41,89 +383,25 @@ model PaymentOrder {
 
   userId            String?
   user              User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-
   proposal          CommerceProposal?
 
   @@index([status])
   @@index([paypalOrderId])
+  @@index([createdAt])
   @@map("payment_orders")
 }
 
-// 3. AI Interaction / Audit Log Entity
-// Records AI requests, operations, providers, latency, and sanitized summaries
-model AIAuditLog {
-  id              String   @id @default(uuid())
-  requestId       String   @unique
-  operation       String   // e.g. "INTENT_ANALYSIS", "ACTION_PROPOSAL", "SAFETY_AUDIT"
-  provider        String   // e.g. "mock", "gemini", "openai"
-  model           String
-  status          String   // "SUCCESS", "REJECTED_BY_POLICY", "FAILED", "BLOCKED_INJECTION"
-  latencyMs       Int?
-  promptSummary   String?  // Redacted, safe prompt digest
-  responseSummary String?  // Redacted, safe response summary
-  metadata        String?  // Safe JSON metadata (no secrets or sensitive PII)
-  createdAt       DateTime @default(now())
-
-  userId          String?
-  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([operation])
-  @@index([status])
-  @@map("ai_audit_logs")
-}
-
-// 4. Webhook / Event Entity
-// Records incoming PayPal webhook events, signature verification status, and idempotency
-model WebhookEvent {
-  id                 String    @id @default(uuid())
-  eventId            String    @unique // PayPal event ID (e.g. WH-XXXXXXXX)
-  eventType          String    // e.g. PAYMENT.CAPTURE.COMPLETED, CHECKOUT.ORDER.APPROVED
-  resourceType       String?   // e.g. capture, checkout-order
-  processingStatus   String    // "RECEIVED", "VERIFIED", "PROCESSED", "DUPLICATE", "FAILED", "INVALID_SIGNATURE"
-  signatureVerified  Boolean   @default(false)
-  payload            String?   // Sanitized payload JSON
-  errorMessage       String?
-  receivedAt         DateTime  @default(now())
-  processedAt        DateTime?
-
-  @@index([eventType])
-  @@index([processingStatus])
-  @@map("webhook_events")
-}
-
-// 5. Product Catalog Entity (Phase 3 AI Commerce Foundation)
-model Product {
-  id          String   @id @default(uuid())
-  sku         String   @unique
-  name        String
-  description String
-  category    String
-  price       Float
-  currency    String   @default("USD")
-  inventory   Int      @default(100)
-  isAvailable Boolean  @default(true)
-  metadata    String?  // Safe JSON metadata
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  proposals   CommerceProposal[]
-
-  @@index([category])
-  @@index([isAvailable])
-  @@map("products")
-}
-
-// 6. Commerce Proposal Entity (Intermediate boundary between AI recommendation and PayPal Order)
+// Preserved: Commerce Proposal for governed AI Shopping Assistant
 model CommerceProposal {
   id             String        @id @default(uuid())
   proposalNumber String        @unique // e.g. PROP-20261110-XXXX
   productId      String
   product        Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantity       Int           @default(1)
-  unitAmount     Float
-  totalAmount    Float
+  unitAmount     Decimal       @db.Decimal(12, 2)
+  totalAmount    Decimal       @db.Decimal(12, 2)
   currency       String        @default("USD")
-  status         String        @default("PENDING_CONFIRMATION") // DRAFT, PENDING_CONFIRMATION, CONFIRMED, EXPIRED, CANCELLED, COMPLETED, FAILED
+  status         String        @default("PENDING_CONFIRMATION")
   expiresAt      DateTime
   confirmedAt    DateTime?
   paymentOrderId String?       @unique
@@ -139,7 +417,7 @@ model CommerceProposal {
   @@map("commerce_proposals")
 }
 
-// 7. Conversational Commerce Memory Entities
+// Preserved: Conversational Commerce Memory
 model CommerceConversation {
   id        String   @id @default(uuid())
   sessionId String   @unique
@@ -158,10 +436,49 @@ model CommerceMessage {
   conversation   CommerceConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   role           String               // "user" | "assistant" | "system"
   content        String
-  metadata       String?              // Safe JSON (no secrets)
+  metadata       String?              // Safe JSON
   createdAt      DateTime             @default(now())
 
   @@index([conversationId])
   @@map("commerce_messages")
 }
 
+// Preserved: AI Audit Log
+model AIAuditLog {
+  id              String   @id @default(uuid())
+  requestId       String   @unique
+  operation       String   // e.g. "INTENT_ANALYSIS", "ACTION_PROPOSAL", "SAFETY_AUDIT"
+  provider        String   // e.g. "mock", "gemini", "openai"
+  model           String
+  status          String   // "SUCCESS", "REJECTED_BY_POLICY", "FAILED", "BLOCKED_INJECTION"
+  latencyMs       Int?
+  promptSummary   String?
+  responseSummary String?
+  metadata        String?
+  createdAt       DateTime @default(now())
+
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([operation])
+  @@index([status])
+  @@map("ai_audit_logs")
+}
+
+// Preserved: Webhook Event Idempotency & Replay Protection
+model WebhookEvent {
+  id                 String    @id @default(uuid())
+  eventId            String    @unique // PayPal event ID
+  eventType          String    // e.g. PAYMENT.CAPTURE.COMPLETED
+  resourceType       String?
+  processingStatus   String    // "RECEIVED", "VERIFIED", "PROCESSED", "DUPLICATE", "FAILED", "INVALID_SIGNATURE"
+  signatureVerified  Boolean   @default(false)
+  payload            String?
+  errorMessage       String?
+  receivedAt         DateTime  @default(now())
+  processedAt        DateTime?
+
+  @@index([eventType])
+  @@index([processingStatus])
+  @@map("webhook_events")
+}

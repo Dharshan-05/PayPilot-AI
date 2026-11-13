@@ -57,7 +57,7 @@ export class SearchDocumentNormalizer {
       category: cleanCategory,
       brand: cleanBrand,
       model: cleanModel,
-      price: product.price,
+      price: Number(product.price),
       currency: product.currency.toUpperCase(),
       inventory: product.inventory,
       isAvailable: product.isAvailable && product.inventory > 0,

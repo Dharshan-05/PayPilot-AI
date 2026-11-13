@@ -90,9 +90,9 @@ describe("Phase 9 — Testing, Postman & Security Hardening Verification", () =>
         quantity: 1,
       });
 
-      expect(proposal.unitAmount).toBe(target.price);
-      expect(proposal.totalAmount).toBe(target.price);
-      expect(proposal.totalAmount).not.toBe(0.01);
+      expect(Number(proposal.unitAmount)).toBe(Number(target.price));
+      expect(Number(proposal.totalAmount)).toBe(Number(target.price));
+      expect(Number(proposal.totalAmount)).not.toBe(0.01);
     });
 
     it("should reject proposal creation for zero or negative quantity", async () => {
@@ -373,7 +373,7 @@ describe("Phase 9 — Testing, Postman & Security Hardening Verification", () =>
       const found = await payPalService.getOrder(order.id);
       expect(found).toBeDefined();
       expect(found.paypalOrderId).toBe(order.id);
-      expect(found.amount).toBe(35.0);
+      expect(Number(found.amount)).toBe(35.0);
     });
 
     it("should look up orders by Internal Reference", async () => {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Product } from "@prisma/client";
+import { Product, Prisma } from "@prisma/client";
 import { Logger } from "../../observability/logger";
 
 const log = new Logger("ProductIntelligence:Attributes");
@@ -42,14 +42,17 @@ export class ProductEnricher {
   /**
    * Validates product data before allowing it into the intelligence index.
    */
-  public static validateProductData(product: Partial<Product>): void {
+  public static validateProductData(
+    product: Partial<Omit<Product, "price">> & { price?: number | Prisma.Decimal | any }
+  ): void {
     if (!product.sku || product.sku.trim().length === 0) {
       throw new ProductValidationError("Product SKU is required and cannot be empty.");
     }
     if (!product.name || product.name.trim().length === 0) {
       throw new ProductValidationError("Product name is required.");
     }
-    if (typeof product.price !== "number" || isNaN(product.price) || product.price <= 0) {
+    const numericPrice = typeof product.price === "number" ? product.price : Number(product.price);
+    if (isNaN(numericPrice) || numericPrice <= 0) {
       throw new ProductValidationError(`Invalid price: ${product.price}. Price must be positive.`);
     }
     if (typeof product.inventory !== "number" || product.inventory < 0) {
