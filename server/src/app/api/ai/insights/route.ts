@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
     const insights = await insightRepository.list({ type, severity, status, limit });
 
-    const formatted = insights.map((i) => ({
+    const formatted = insights.map((i: any) => ({
       id: i.id,
       transactionId: i.transactionId,
       type: i.type,

@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
       riskRepository.getOverview(),
     ]);
 
-    const formatted = assessments.map((ra) => ({
+    const formatted = assessments.map((ra: any) => ({
       id: ra.id,
       transactionId: ra.transactionId,
       score: ra.score,

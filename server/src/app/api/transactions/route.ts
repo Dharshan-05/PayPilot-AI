@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
       transactionRepository.count({ status, type, riskLevel }),
     ]);
 
-    const formatted = transactions.map((t) => ({
+    const formatted = transactions.map((t: any) => ({
       id: t.id,
       paymentId: t.paymentId,
       customerId: t.customerId,
@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
             confidence: Number(t.riskAssessment.confidence),
           }
         : null,
-      aiInsights: t.aiInsights.map((i) => ({
+      aiInsights: t.aiInsights.map((i: any) => ({
         id: i.id,
         type: i.type,
         title: i.title,

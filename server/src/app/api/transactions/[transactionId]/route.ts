@@ -70,7 +70,7 @@ export async function GET(
             reasons: JSON.parse(tx.riskAssessment.reasons || "[]"),
           }
         : null,
-      aiInsights: tx.aiInsights.map((i) => ({
+      aiInsights: tx.aiInsights.map((i: any) => ({
         id: i.id,
         type: i.type,
         title: i.title,

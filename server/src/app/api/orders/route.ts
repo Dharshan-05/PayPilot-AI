@@ -19,9 +19,9 @@ export async function GET(req: NextRequest) {
     const statusFilter = searchParams.get("status")?.toUpperCase();
 
     const orders = await dbRepository.getRecentOrders(rawLimit);
-    const filtered = statusFilter ? orders.filter((o) => o.status === statusFilter) : orders;
+    const filtered = statusFilter ? orders.filter((o: any) => o.status === statusFilter) : orders;
 
-    const safeOrders = filtered.map((o) => ({
+    const safeOrders = filtered.map((o: any) => ({
       id: o.id,
       internalReference: o.internalReference,
       paypalOrderId: o.paypalOrderId,

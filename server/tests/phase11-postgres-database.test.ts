@@ -310,7 +310,7 @@ describe("Phase 11 — Complete Persistent PostgreSQL Architecture & Integrity",
 
     expect(insight.id).toBeDefined();
     const active = await insightRepository.getActive(5);
-    expect(active.some((i) => i.id === insight.id)).toBe(true);
+    expect(active.some((i: any) => i.id === insight.id)).toBe(true);
   });
 
   // --------------------------------------------------------------------------
