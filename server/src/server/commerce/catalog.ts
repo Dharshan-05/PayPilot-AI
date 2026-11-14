@@ -1,6 +1,8 @@
 import { prisma } from "../db/client";
 import { Product, Prisma } from "@prisma/client";
 import { Logger } from "../observability/logger";
+import { executeDbWithFallback } from "../db/resilience";
+import { fallbackStore, FallbackProduct } from "../db/fallback-store";
 
 const log = new Logger("CatalogService");
 
@@ -158,8 +160,6 @@ export class CatalogService {
    * Search catalog products with filters, grounding AI in real inventory.
    */
   async searchProducts(params: ProductSearchParams = {}): Promise<Product[]> {
-    await this.ensureCatalogSeeded();
-
     const {
       query,
       category,
@@ -171,72 +171,161 @@ export class CatalogService {
       offset = 0,
     } = params;
 
-    const where: any = {
-      currency: currency.toUpperCase(),
-    };
+    return executeDbWithFallback(
+      async () => {
+        await this.ensureCatalogSeeded();
 
-    if (inStockOnly) {
-      where.isAvailable = true;
-      where.inventory = { gt: 0 };
-    }
+        const where: any = {
+          currency: currency.toUpperCase(),
+        };
 
-    if (category) {
-      where.category = { contains: category.toLowerCase() };
-    }
+        if (inStockOnly) {
+          where.isAvailable = true;
+          where.inventory = { gt: 0 };
+        }
 
-    if (minPrice !== undefined || maxPrice !== undefined) {
-      where.price = {};
-      if (minPrice !== undefined) where.price.gte = minPrice;
-      if (maxPrice !== undefined) where.price.lte = maxPrice;
-    }
+        if (category) {
+          where.category = { contains: category.toLowerCase() };
+        }
 
-    if (query && query.trim()) {
-      const q = query.trim().toLowerCase();
-      where.OR = [
-        { name: { contains: q } },
-        { description: { contains: q } },
-        { category: { contains: q } },
-        { sku: { contains: q } },
-      ];
-    }
+        if (minPrice !== undefined || maxPrice !== undefined) {
+          where.price = {};
+          if (minPrice !== undefined) where.price.gte = minPrice;
+          if (maxPrice !== undefined) where.price.lte = maxPrice;
+        }
 
-    return prisma.product.findMany({
-      where,
-      take: limit,
-      skip: offset,
-      orderBy: { price: "asc" },
-    });
+        if (query && query.trim()) {
+          const q = query.trim().toLowerCase();
+          where.OR = [
+            { name: { contains: q } },
+            { description: { contains: q } },
+            { category: { contains: q } },
+            { sku: { contains: q } },
+          ];
+        }
+
+        return prisma.product.findMany({
+          where,
+          take: limit,
+          skip: offset,
+          orderBy: { price: "asc" },
+        });
+      },
+      () => {
+        fallbackStore.seed();
+        let filtered = [...fallbackStore.products];
+
+        if (currency) {
+          filtered = filtered.filter((p) => p.currency.toUpperCase() === currency.toUpperCase());
+        }
+
+        if (inStockOnly) {
+          filtered = filtered.filter((p) => p.isAvailable && p.inventory > 0);
+        }
+
+        if (category) {
+          const cat = category.toLowerCase();
+          filtered = filtered.filter((p) => p.category.toLowerCase().includes(cat));
+        }
+
+        if (minPrice !== undefined) {
+          filtered = filtered.filter((p) => Number(p.price) >= minPrice);
+        }
+
+        if (maxPrice !== undefined) {
+          filtered = filtered.filter((p) => Number(p.price) <= maxPrice);
+        }
+
+        if (query && query.trim()) {
+          const q = query.trim().toLowerCase();
+          filtered = filtered.filter(
+            (p) =>
+              p.name.toLowerCase().includes(q) ||
+              p.description.toLowerCase().includes(q) ||
+              p.category.toLowerCase().includes(q) ||
+              p.sku.toLowerCase().includes(q)
+          );
+        }
+
+        filtered.sort((a, b) => Number(a.price) - Number(b.price));
+        return filtered.slice(offset, offset + limit) as any;
+      },
+      "searchProducts"
+    );
   }
 
   async getProductById(id: string): Promise<Product | null> {
-    return prisma.product.findUnique({
-      where: { id },
-    });
+    return executeDbWithFallback(
+      () =>
+        prisma.product.findUnique({
+          where: { id },
+        }),
+      () => {
+        fallbackStore.seed();
+        return (fallbackStore.products.find((p) => p.id === id || p.sku === id) as any) || null;
+      },
+      "getProductById"
+    );
   }
 
   async getProductBySku(sku: string): Promise<Product | null> {
-    return prisma.product.findUnique({
-      where: { sku },
-    });
+    return executeDbWithFallback(
+      () =>
+        prisma.product.findUnique({
+          where: { sku },
+        }),
+      () => {
+        fallbackStore.seed();
+        return (fallbackStore.products.find((p) => p.sku === sku) as any) || null;
+      },
+      "getProductBySku"
+    );
   }
 
   async updateProductPrice(id: string, newPrice: number): Promise<Product> {
-    return prisma.product.update({
-      where: { id },
-      data: { price: newPrice },
-    });
+    return executeDbWithFallback(
+      () =>
+        prisma.product.update({
+          where: { id },
+          data: { price: newPrice },
+        }),
+      () => {
+        fallbackStore.seed();
+        const p = fallbackStore.products.find((prod) => prod.id === id || prod.sku === id);
+        if (p) {
+          p.price = new Prisma.Decimal(newPrice);
+          return p as any;
+        }
+        throw new Error(`Product ${id} not found in fallback catalog`);
+      },
+      "updateProductPrice"
+    );
   }
 
   async updateProductInventory(id: string, newInventory: number, isAvailable?: boolean): Promise<Product> {
-    return prisma.product.update({
-      where: { id },
-      data: {
-        inventory: newInventory,
-        ...(isAvailable !== undefined
-          ? { isAvailable }
-          : { isAvailable: newInventory > 0 }),
+    return executeDbWithFallback(
+      () =>
+        prisma.product.update({
+          where: { id },
+          data: {
+            inventory: newInventory,
+            ...(isAvailable !== undefined
+              ? { isAvailable }
+              : { isAvailable: newInventory > 0 }),
+          },
+        }),
+      () => {
+        fallbackStore.seed();
+        const p = fallbackStore.products.find((prod) => prod.id === id || prod.sku === id);
+        if (p) {
+          p.inventory = newInventory;
+          p.isAvailable = isAvailable !== undefined ? isAvailable : newInventory > 0;
+          return p as any;
+        }
+        throw new Error(`Product ${id} not found in fallback catalog`);
       },
-    });
+      "updateProductInventory"
+    );
   }
 }
 

@@ -1,5 +1,7 @@
 export * from "./client";
 export * from "./repository";
+export * from "./resilience";
+export * from "./fallback-store";
 
 // Modular Domain Repositories (PayPilot AI Persistent Database Architecture)
 export * from "./repositories/customer.repository";

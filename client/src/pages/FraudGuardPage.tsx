@@ -77,7 +77,9 @@ export const FraudGuardPage: React.FC<FraudGuardPageProps> = ({ onNavigate, onTo
         agentService.getAuditLogs(6),
       ]);
       setAuditEvents(events);
-      const allHealthy = health.status === 'healthy' && health.database === 'connected';
+      const allHealthy =
+        health.status === 'healthy' &&
+        (health.database === 'connected' || health.database.includes('resilient'));
       const nextScore = allHealthy ? 99 : 84;
       setSecurityScore(nextScore);
       if (showToastFeedback) {

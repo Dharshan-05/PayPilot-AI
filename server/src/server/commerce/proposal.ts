@@ -4,6 +4,9 @@ import { catalogService } from "./catalog";
 import { payPalService } from "../paypal/service";
 import { Logger } from "../observability/logger";
 import { AgentActionPolicy } from "./policy";
+import { executeDbWithFallback } from "../db/resilience";
+import { fallbackStore } from "../db/fallback-store";
+import { dbRepository } from "../db/repository";
 
 const log = new Logger("ProposalService");
 
@@ -91,39 +94,90 @@ export class ProposalService {
       totalAmount: numTotal,
     });
 
-    return prisma.commerceProposal.create({
-      data: {
-        proposalNumber,
-        productId: product.id,
-        quantity,
-        unitAmount,
-        totalAmount,
-        currency: product.currency,
-        status: "PENDING_CONFIRMATION",
-        expiresAt,
-        userId,
-        conversationId,
-        metadata: JSON.stringify({
-          productName: product.name,
-          sku: product.sku,
-          category: product.category,
+    return executeDbWithFallback(
+      () =>
+        prisma.commerceProposal.create({
+          data: {
+            proposalNumber,
+            productId: product.id,
+            quantity,
+            unitAmount,
+            totalAmount,
+            currency: product.currency,
+            status: "PENDING_CONFIRMATION",
+            expiresAt,
+            userId,
+            conversationId,
+            metadata: JSON.stringify({
+              productName: product.name,
+              sku: product.sku,
+              category: product.category,
+            }),
+          },
         }),
+      () => {
+        fallbackStore.seed();
+        const p: any = {
+          id: `prop-uuid-${Date.now().toString(36)}`,
+          proposalNumber,
+          productId: product.id,
+          quantity,
+          unitAmount,
+          totalAmount,
+          currency: product.currency,
+          status: "PENDING_CONFIRMATION",
+          paymentOrderId: null,
+          expiresAt,
+          metadata: JSON.stringify({
+            productName: product.name,
+            sku: product.sku,
+            category: product.category,
+          }),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          product,
+        };
+        fallbackStore.proposals.unshift(p);
+        return p;
       },
-    });
+      "createProposal"
+    );
   }
 
   async getProposalById(id: string): Promise<(CommerceProposal & { product: Product }) | null> {
-    return prisma.commerceProposal.findUnique({
-      where: { id },
-      include: { product: true },
-    });
+    return executeDbWithFallback(
+      () =>
+        prisma.commerceProposal.findUnique({
+          where: { id },
+          include: { product: true },
+        }),
+      () => {
+        fallbackStore.seed();
+        const p = fallbackStore.proposals.find((item) => item.id === id);
+        if (!p) return null;
+        const prod = fallbackStore.products.find((prod) => prod.id === p.productId) || fallbackStore.products[0];
+        return { ...p, product: prod } as any;
+      },
+      "getProposalById"
+    );
   }
 
   async getProposalByNumber(proposalNumber: string): Promise<(CommerceProposal & { product: Product }) | null> {
-    return prisma.commerceProposal.findUnique({
-      where: { proposalNumber },
-      include: { product: true },
-    });
+    return executeDbWithFallback(
+      () =>
+        prisma.commerceProposal.findUnique({
+          where: { proposalNumber },
+          include: { product: true },
+        }),
+      () => {
+        fallbackStore.seed();
+        const p = fallbackStore.proposals.find((item) => item.proposalNumber === proposalNumber);
+        if (!p) return null;
+        const prod = fallbackStore.products.find((prod) => prod.id === p.productId) || fallbackStore.products[0];
+        return { ...p, product: prod } as any;
+      },
+      "getProposalByNumber"
+    );
   }
 
   /**
@@ -157,9 +211,7 @@ export class ProposalService {
         proposalId,
         paymentOrderId: proposal.paymentOrderId,
       });
-      const order = await prisma.paymentOrder.findUnique({
-        where: { id: proposal.paymentOrderId },
-      });
+      const order = await dbRepository.getOrderById(proposal.paymentOrderId);
       return {
         proposal,
         paypalOrderId: order?.paypalOrderId || "",
@@ -176,10 +228,19 @@ export class ProposalService {
     // 3. Expiration Check
     if (new Date() > proposal.expiresAt) {
       log.warn("Proposal confirmation rejected: Expired", { proposalId, expiresAt: proposal.expiresAt });
-      await prisma.commerceProposal.update({
-        where: { id: proposal.id },
-        data: { status: "EXPIRED" },
-      });
+      await executeDbWithFallback(
+        () =>
+          prisma.commerceProposal.update({
+            where: { id: proposal.id },
+            data: { status: "EXPIRED" },
+          }),
+        () => {
+          const p = fallbackStore.proposals.find((item) => item.id === proposal.id);
+          if (p) p.status = "EXPIRED";
+          return p as any;
+        },
+        "proposal.expire"
+      );
       throw new ProposalExpiredError();
     }
 
@@ -227,18 +288,30 @@ export class ProposalService {
     });
 
     // 7. Find created PaymentOrder in DB and update CommerceProposal
-    const paymentOrderRecord = await prisma.paymentOrder.findUnique({
-      where: { internalReference },
-    });
+    const paymentOrderRecord = await dbRepository.getOrderByInternalRef(internalReference);
 
-    const updatedProposal = await prisma.commerceProposal.update({
-      where: { id: proposal.id },
-      data: {
-        status: "CONFIRMED",
-        confirmedAt: new Date(),
-        paymentOrderId: paymentOrderRecord?.id,
+    const updatedProposal = await executeDbWithFallback(
+      () =>
+        prisma.commerceProposal.update({
+          where: { id: proposal.id },
+          data: {
+            status: "CONFIRMED",
+            confirmedAt: new Date(),
+            paymentOrderId: paymentOrderRecord?.id,
+          },
+        }),
+      () => {
+        const p = fallbackStore.proposals.find((item) => item.id === proposal.id);
+        if (p) {
+          p.status = "CONFIRMED";
+          p.paymentOrderId = paymentOrderRecord?.id || `pord-${Date.now().toString(36)}`;
+          p.updatedAt = new Date();
+          return p as any;
+        }
+        return proposal;
       },
-    });
+      "proposal.confirm"
+    );
 
     const approveLink = payPalOrder.approvalLink;
 
@@ -256,17 +329,30 @@ export class ProposalService {
   }
 
   async cancelProposal(proposalId: string): Promise<CommerceProposal> {
-    const proposal = await prisma.commerceProposal.findUnique({ where: { id: proposalId } });
+    const proposal = await this.getProposalById(proposalId);
     if (!proposal) throw new Error(`Proposal '${proposalId}' not found.`);
 
     if (proposal.status !== "PENDING_CONFIRMATION") {
       throw new ProposalInvalidStateError(`Cannot cancel proposal in state '${proposal.status}'.`);
     }
 
-    return prisma.commerceProposal.update({
-      where: { id: proposalId },
-      data: { status: "CANCELLED" },
-    });
+    return executeDbWithFallback(
+      () =>
+        prisma.commerceProposal.update({
+          where: { id: proposalId },
+          data: { status: "CANCELLED" },
+        }),
+      () => {
+        const p = fallbackStore.proposals.find((item) => item.id === proposalId);
+        if (p) {
+          p.status = "CANCELLED";
+          p.updatedAt = new Date();
+          return p as any;
+        }
+        return proposal;
+      },
+      "proposal.cancel"
+    );
   }
 }
 

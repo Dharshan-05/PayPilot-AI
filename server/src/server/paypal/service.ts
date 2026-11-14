@@ -201,15 +201,13 @@ export class PayPalService {
         }
       );
     } catch (err: any) {
+      const errStr = `${err?.message || ""} ${err?.safeMessage || ""}`;
       const isUnapproved =
-        err instanceof PayPalApiError &&
-        err.statusCode === 422 &&
-        (err.details?.some((d: any) => d.issue === "ORDER_NOT_APPROVED") ||
-          err.message?.includes("ORDER_NOT_APPROVED") ||
-          err.message?.includes("semantically incorrect") ||
-          err.message?.includes("failed business validation") ||
-          err.safeMessage?.includes("semantically incorrect") ||
-          err.safeMessage?.includes("failed business validation"));
+        (err instanceof PayPalApiError || err?.name === "PayPalApiError" || err?.statusCode === 422) &&
+        (err?.details?.some((d: any) => d.issue === "ORDER_NOT_APPROVED") ||
+          errStr.includes("ORDER_NOT_APPROVED") ||
+          errStr.includes("semantically incorrect") ||
+          errStr.includes("failed business validation"));
 
       if (isUnapproved && this.client.getEnvironment() === "sandbox") {
         log.warn(

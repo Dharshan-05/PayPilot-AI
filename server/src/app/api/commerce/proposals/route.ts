@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/server/db/client";
 import { proposalService } from "@/server/commerce/proposal";
+import { executeDbWithFallback } from "@/server/db/resilience";
+import { fallbackStore } from "@/server/db/fallback-store";
 import {
   createSuccessResponse,
   enforceRateLimit,
@@ -18,14 +20,24 @@ export async function GET(req: NextRequest) {
     const limit = Number.isFinite(rawLimit) ? Math.min(50, Math.max(1, rawLimit)) : 20;
     const status = searchParams.get("status")?.toUpperCase();
 
-    const proposals = await prisma.commerceProposal.findMany({
-      where: status ? { status } : undefined,
-      orderBy: { createdAt: "desc" },
-      take: limit,
-      include: { product: true },
-    });
+    const proposals = await executeDbWithFallback(
+      () =>
+        prisma.commerceProposal.findMany({
+          where: status ? { status } : undefined,
+          orderBy: { createdAt: "desc" },
+          take: limit,
+          include: { product: true },
+        }),
+      () => {
+        fallbackStore.seed();
+        let list = [...fallbackStore.proposals];
+        if (status) list = list.filter((p) => p.status === status);
+        return list.slice(0, limit) as any;
+      },
+      "commerceProposal.findMany"
+    );
 
-    const enriched = proposals.map((p) => ({
+    const enriched = proposals.map((p: any) => ({
       ...p,
       isExpired: new Date() > p.expiresAt,
     }));
@@ -48,14 +60,14 @@ export async function POST(req: NextRequest) {
   const limited = enforceRateLimit(req, requestId, "proposals_create", "sensitive");
   if (limited) return limited;
   try {
-    const rawBody = await safeParseJson<any>(req);
-    const validated = createProposalSchema.parse(rawBody);
+    const body = await safeParseJson(req);
+    const { productId, quantity, userId, conversationId } = createProposalSchema.parse(body);
 
     const proposal = await proposalService.createProposal({
-      productId: validated.productId,
-      quantity: validated.quantity,
-      userId: validated.userId,
-      conversationId: validated.conversationId,
+      productId,
+      quantity,
+      userId,
+      conversationId,
     });
 
     return createSuccessResponse(proposal, requestId, 201);
